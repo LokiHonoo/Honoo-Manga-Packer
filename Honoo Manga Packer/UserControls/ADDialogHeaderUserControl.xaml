@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Honoo.MangaPacker.UserControls.ADDialogHeaderUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Honoo.MangaPacker.UserControls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Honoo.MangaPacker.ViewModels"
+             d:Background="Azure"
+             mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:ADDialogHeaderUserControlViewModel />
+    </UserControl.DataContext>
+    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+        <TextBlock Text="广告页" />
+        <TextBlock Margin="20,0,0,0" Text="{Binding Settings.ADs.Count}" />
+    </StackPanel>
+</UserControl>

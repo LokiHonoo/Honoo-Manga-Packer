@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="Honoo.MangaPacker.UserControls.TagDialogUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:hui="https://github.com/lokihonoo/honooui.wpf"
+             xmlns:local="clr-namespace:Honoo.MangaPacker"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Honoo.MangaPacker.ViewModels"
+             Width="270"
+             Height="320"
+             d:Background="White"
+             d:DesignHeight="320"
+             d:DesignWidth="270"
+             mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:TagDialogUserControlViewModel />
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <hui:ActivatableTextBox ActivatableMode="PressEnter"
+                                Command="{Binding AddTagCommand}"
+                                Text="{Binding Tag, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+            <hui:ActivatableTextBox.Header>
+                <Border Margin="5,5,0,5"
+                        VerticalAlignment="Stretch"
+                        Background="#FFCECECE"
+                        CornerRadius="5">
+                    <TextBlock Margin="5,2" Text="新标签" />
+                </Border>
+            </hui:ActivatableTextBox.Header>
+            <hui:ActivatableTextBox.Footer>
+                <Button Margin="3,0"
+                        Command="{Binding AddTagCommand}"
+                        Style="{StaticResource ButtonTransparentStyle}">
+                    <Path Margin="5"
+                          Data="{StaticResource PlusCircleGeometry}"
+                          Style="{StaticResource PathIcon16Style}" />
+                </Button>
+            </hui:ActivatableTextBox.Footer>
+        </hui:ActivatableTextBox>
+        <ListBox Grid.Row="1"
+                 Margin="0,10"
+                 ItemsSource="{Binding Settings.Tags}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding}" />
+                        <Button Grid.Column="1"
+                                Margin="10,0,0,0"
+                                Command="{Binding Path=DataContext.(vm:TagDialogUserControlViewModel.MoveUpTagCommand), RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}}"
+                                CommandParameter="{Binding}">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource ButtonTransparentStyle}" TargetType="{x:Type Button}">
+                                    <Setter Property="Foreground" Value="#FFADADAD" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#FF1F1F1F" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Path Data="{StaticResource ArrowUpGeometry}" Style="{StaticResource PathIcon12Style}" />
+                        </Button>
+                        <Button Grid.Column="2"
+                                Margin="10,0,0,0"
+                                Command="{Binding Path=DataContext.(vm:TagDialogUserControlViewModel.MoveDownTagCommand), RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}}"
+                                CommandParameter="{Binding}">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource ButtonTransparentStyle}" TargetType="{x:Type Button}">
+                                    <Setter Property="Foreground" Value="#FFADADAD" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#FF1F1F1F" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource PathIcon12Style}" />
+                        </Button>
+                        <Button Grid.Column="3"
+                                Margin="10,0,0,0"
+                                Command="{Binding Path=DataContext.(vm:TagDialogUserControlViewModel.RemoveTagCommand), RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}}"
+                                CommandParameter="{Binding}">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource ButtonTransparentStyle}" TargetType="{x:Type Button}">
+                                    <Setter Property="Foreground" Value="#FFFFADAD" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#FFFF3737" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Path Data="{StaticResource MinusCircleFillGeometry}" Style="{StaticResource PathIcon12Style}" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <CheckBox Grid.Row="2"
+                  HorizontalAlignment="Left"
+                  Content="删除需要确认"
+                  IsChecked="{Binding Settings.TagRemoveConfirm, Mode=TwoWay}" />
+    </Grid>
+</UserControl>

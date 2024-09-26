@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honoo Manga Packer", "Honoo Manga Packer\Honoo Manga Packer.csproj", "{066AF748-835D-4454-9E22-2EC765A540F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{22701320-B458-4881-8B99-95326D66D8B7}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{066AF748-835D-4454-9E22-2EC765A540F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066AF748-835D-4454-9E22-2EC765A540F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066AF748-835D-4454-9E22-2EC765A540F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066AF748-835D-4454-9E22-2EC765A540F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41D2514C-770C-46DA-B730-58F6D8F81363}
+	EndGlobalSection
+EndGlobal
