@@ -12,7 +12,9 @@
 	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	<Copyright>Copyright (C) Loki Honoo 2021. All rights reserved.</Copyright>
 	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-	<AnalysisLevel>latest-all</AnalysisLevel>
+	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<AnalysisLevel>latest-all</AnalysisLevel>	  
 	<PackageProjectUrl>https://github.com/LokiHonoo/Honoo-Manga-Toolbox</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/LokiHonoo/Honoo-Manga-Toolbox</RepositoryUrl>
 	<ApplicationIcon>Resources\yoriko18.ico</ApplicationIcon>
@@ -22,8 +24,6 @@
     <BaseOutputPath>..\bin\</BaseOutputPath>
     <Description>漫画和图包的打包辅助工具。支持 ZIP/RAR/7Z/PDF 解压缩或重新打包到无压缩 ZIP 文件。支持试用密码和移除广告页。</Description>
     <AssemblyName>MangaPacker</AssemblyName>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
 	<ItemGroup>
