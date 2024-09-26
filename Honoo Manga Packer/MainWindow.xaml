@@ -1,0 +1,428 @@
+﻿<hui:Window x:Class="Honoo.MangaPacker.MainWindow"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:hui="https://github.com/lokihonoo/honooui.wpf"
+            xmlns:local="clr-namespace:Honoo.MangaPacker"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:vm="clr-namespace:Honoo.MangaPacker.ViewModels"
+            Title="Honoo Manga Pack"
+            MaxWidth="578"
+            Left="{Binding Settings.WindowLeft, Mode=TwoWay}"
+            ResizeMode="CanMinimize"
+            SizeToContent="WidthAndHeight"
+            SystemButtons="Minimize"
+            Top="{Binding Settings.WindowTop, Mode=TwoWay}"
+            Topmost="{Binding Settings.Topmost, Mode=TwoWay}"
+            mc:Ignorable="d">
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+    <hui:Window.CaptionBar>
+        <DockPanel LastChildFill="False">
+            <Image Width="20"
+                   Height="20"
+                   Margin="14,0,0,0"
+                   VerticalAlignment="Center"
+                   DockPanel.Dock="Left"
+                   Source="/Resources/yoriko18.ico"
+                   WindowChrome.IsHitTestVisibleInChrome="False" />
+            <TextBlock Margin="14,0,0,0"
+                       VerticalAlignment="Center"
+                       DockPanel.Dock="Left"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource AccentBrush}"
+                       Text="Honoo Manga Pack"
+                       WindowChrome.IsHitTestVisibleInChrome="False" />
+            <ToggleButton Margin="0,0,1,0"
+                          hui:ToggleButtonAttaches.CheckedBackground="{DynamicResource Alpha20Brush}"
+                          hui:ToggleButtonAttaches.CheckedContent="{StaticResource PinFillGeometry}"
+                          hui:ToggleButtonAttaches.UncheckedContent="{StaticResource PinGeometry}"
+                          ContentTemplate="{StaticResource GeometryToPathIcon16DataTemplate}"
+                          DockPanel.Dock="Right"
+                          IsChecked="{Binding Settings.Topmost, Mode=TwoWay}"
+                          Style="{StaticResource ToggleButtonCaptionBarSystemStyle}"
+                          WindowChrome.IsHitTestVisibleInChrome="True" />
+        </DockPanel>
+    </hui:Window.CaptionBar>
+    <Grid>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Border Width="270"
+                    Height="140"
+                    Margin="0,0,5,0"
+                    AllowDrop="True"
+                    Background="#FFCAE4B5"
+                    CornerRadius="10">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="Drop">
+                        <b:InvokeCommandAction Command="{Binding UnpackDropCommand}" PassEventArgsToCommand="True" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               Text="拖放 ZIP/RAR/7Z/PDF ..." />
+                    <ProgressBar Grid.Row="1"
+                                 Margin="70,0"
+                                 d:Visibility="Visible"
+                                 Background="Transparent"
+                                 Foreground="#FFFB9D4C"
+                                 IsIndeterminate="True"
+                                 Visibility="{Binding UnpackWorkbench.IsRunning, Converter={x:Static hui:Converters.BooleanToVisibilityConverter}, Mode=OneWay}" />
+                    <TextBlock Grid.Row="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               d:Text="0"
+                               FontFamily="/Resources/#LESLIE"
+                               FontSize="32"
+                               Text="{Binding UnpackWorkbench.Projects.Count, Mode=OneWay}" />
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Resources>
+                            <hui:BooleanToCustumConverter x:Key="BooleanToCustumConverter"
+                                                          FalseValue="解 包"
+                                                          TrueValue="取 消" />
+                        </Grid.Resources>
+                        <Button Padding="7"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                d:Visibility="Visible"
+                                Command="{Binding ViewErrorCommand}"
+                                Content="{StaticResource ExclamationGeometry}"
+                                ContentTemplate="{StaticResource GeometryToPathIcon16DataTemplate}"
+                                Foreground="Red"
+                                Style="{StaticResource ButtonTransparentStyle}"
+                                Visibility="{Binding UnpackWorkbench.HasError, Converter={x:Static hui:Converters.BooleanToVisibilityConverter}, Mode=OneWay}" />
+                        <Button Grid.Column="1"
+                                Margin="5,0,0,0"
+                                Padding="7"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource StressBrush}"
+                                Command="{Binding UnpackClearCommand}"
+                                Content="清除列表"
+                                Foreground="{DynamicResource StressTextBrush}"
+                                IsEnabled="{Binding UnpackWorkbench.IsRunning, Converter={x:Static hui:Converters.BooleanReverseConverter}, Mode=OneWay}"
+                                Visibility="{Binding Settings.ExecuteAtDrop, Converter={x:Static hui:Converters.BooleanToVisibilityReverseConverter}, Mode=OneWay}" />
+                        <Button Grid.Column="3"
+                                Margin="5,0,0,0"
+                                Padding="7"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource AccentBrush}"
+                                Command="{Binding UnpackCommand}"
+                                Content="{Binding UnpackWorkbench.IsRunning, Converter={StaticResource BooleanToCustumConverter}, Mode=OneWay}"
+                                Foreground="{DynamicResource AccentPrimaryTextBrush}"
+                                Visibility="{Binding Settings.ExecuteAtDrop, Converter={x:Static hui:Converters.BooleanToVisibilityReverseConverter}, Mode=OneWay}" />
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1"
+                    Width="270"
+                    Height="140"
+                    Margin="5,0,0,0"
+                    AllowDrop="True"
+                    Background="#FFB0DFFD"
+                    CornerRadius="10">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="Drop">
+                        <b:InvokeCommandAction Command="{Binding PackDropCommand}" PassEventArgsToCommand="True" />
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               Text="拖放项目文件夹列表..." />
+                    <ProgressBar Grid.Row="1"
+                                 Margin="70,0"
+                                 d:Visibility="Visible"
+                                 Background="Transparent"
+                                 Foreground="#FFFB9D4C"
+                                 IsIndeterminate="True"
+                                 Visibility="{Binding PackWorkbench.IsRunning, Converter={x:Static hui:Converters.BooleanToVisibilityConverter}, Mode=OneWay}" />
+                    <TextBlock Grid.Row="1"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               d:Text="0"
+                               FontFamily="/Resources/#LESLIE"
+                               FontSize="32"
+                               Text="{Binding PackWorkbench.Projects.Count, Mode=OneWay}" />
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Resources>
+                            <hui:BooleanToCustumConverter x:Key="BooleanToCustumConverter"
+                                                          FalseValue="打 包"
+                                                          TrueValue="取 消" />
+                        </Grid.Resources>
+                        <Button Padding="7"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                d:Visibility="Visible"
+                                Command="{Binding ViewErrorCommand}"
+                                Content="{StaticResource ExclamationGeometry}"
+                                ContentTemplate="{StaticResource GeometryToPathIcon16DataTemplate}"
+                                Foreground="Red"
+                                Style="{StaticResource ButtonTransparentStyle}"
+                                Visibility="{Binding PackWorkbench.HasError, Converter={x:Static hui:Converters.BooleanToVisibilityConverter}, Mode=OneWay}" />
+                        <Button Grid.Column="1"
+                                Margin="5,0,0,0"
+                                Padding="7"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource StressBrush}"
+                                Command="{Binding PackClearCommand}"
+                                Content="清除列表"
+                                Foreground="{DynamicResource StressTextBrush}"
+                                IsEnabled="{Binding PackWorkbench.IsRunning, Converter={x:Static hui:Converters.BooleanReverseConverter}, Mode=OneWay}"
+                                Visibility="{Binding Settings.ExecuteAtDrop, Converter={x:Static hui:Converters.BooleanToVisibilityReverseConverter}, Mode=OneWay}" />
+                        <Button Grid.Column="2"
+                                Margin="5,0,0,0"
+                                Padding="7"
+                                VerticalAlignment="Center"
+                                Background="{DynamicResource AccentBrush}"
+                                Command="{Binding PackCommand}"
+                                Content="{Binding PackWorkbench.IsRunning, Converter={StaticResource BooleanToCustumConverter}, Mode=OneWay}"
+                                Foreground="{DynamicResource AccentPrimaryTextBrush}"
+                                Visibility="{Binding Settings.ExecuteAtDrop, Converter={x:Static hui:Converters.BooleanToVisibilityReverseConverter}, Mode=OneWay}" />
+                    </Grid>
+                </Grid>
+            </Border>
+            <Expander Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      Margin="0,10,0,0"
+                      d:IsExpanded="True"
+                      hui:ExpanderAttaches.CornerRadius="10"
+                      hui:ExpanderAttaches.HasBodyBorder="True"
+                      hui:ExpanderAttaches.HeaderMinSize="32"
+                      IsExpanded="{Binding Settings.SettingExpanded, Mode=TwoWay}">
+                <Expander.Header>
+                    <StackPanel Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                        <Path Data="{StaticResource SettingGeometry}" Style="{StaticResource PathIcon16Style}" />
+                        <TextBlock Margin="10,0,0,0" Text="设置" />
+                    </StackPanel>
+                </Expander.Header>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Grid.ColumnSpan="2"
+                              hui:GroupBoxAttaches.CornerRadius="10"
+                              hui:GroupBoxAttaches.HasBodyBorder="True"
+                              hui:GroupBoxAttaches.HeaderMinSize="32">
+                        <GroupBox.Header>
+                            <TextBlock Margin="10,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Text="通用设置" />
+                        </GroupBox.Header>
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.ColumnSpan="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <hui:TextBox IsReadOnly="True" Text="{Binding Settings.WorkDirectly, Mode=TwoWay}">
+                                    <hui:TextBox.Header>
+                                        <Border Margin="5,5,0,5"
+                                                VerticalAlignment="Stretch"
+                                                Background="#FFCECECE"
+                                                CornerRadius="5">
+                                            <TextBlock Margin="5,2" Text="工作文件夹" />
+                                        </Border>
+                                    </hui:TextBox.Header>
+                                    <hui:TextBox.Footer>
+                                        <Button Margin="3,0"
+                                                Command="{Binding BrowserWorkDirectlyCommand}"
+                                                Style="{StaticResource ButtonTransparentStyle}">
+                                            <Path Margin="5"
+                                                  Data="{StaticResource FolderOpenGeometry}"
+                                                  Style="{StaticResource PathIcon16Style}" />
+                                        </Button>
+                                    </hui:TextBox.Footer>
+                                </hui:TextBox>
+                            </Grid>
+                            <CheckBox Grid.Row="1"
+                                      Margin="0,10,5,0"
+                                      HorizontalAlignment="Left"
+                                      Content="移除嵌套文件夹，并将最长的名称作为项目名称"
+                                      IsChecked="{Binding Settings.ResetName, Mode=TwoWay}" />
+                            <CheckBox Grid.Row="2"
+                                      Margin="0,10,5,0"
+                                      HorizontalAlignment="Left"
+                                      Content="源文件/文件夹移入回收站"
+                                      IsChecked="{Binding Settings.MoveToRecycleBin, Mode=TwoWay}" />
+                            <CheckBox Grid.Row="1"
+                                      Grid.Column="1"
+                                      Margin="5,10,0,0"
+                                      HorizontalAlignment="Left"
+                                      Content="拖放文件/文件夹后立即处理"
+                                      IsChecked="{Binding Settings.ExecuteAtDrop, Mode=TwoWay}" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1"
+                              Margin="0,10,5,0"
+                              hui:GroupBoxAttaches.CornerRadius="10"
+                              hui:GroupBoxAttaches.HasBodyBorder="True"
+                              hui:GroupBoxAttaches.HeaderMinSize="32">
+                        <GroupBox.Header>
+                            <TextBlock Margin="10,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Text="解包设置" />
+                        </GroupBox.Header>
+                        <StackPanel Margin="10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Text="解包密码列表" />
+                                <Button Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        Command="{Binding EditPasswordsCommand}">
+                                    <Path Margin="5"
+                                          Data="{StaticResource MoreHorizontalGeometry}"
+                                          Style="{StaticResource PathIcon16Style}" />
+                                </Button>
+                            </Grid>
+                            <Grid Margin="0,10,0,0" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox x:Name="CheckBoxUnpacksMoveToPacks"
+                                          Content="解包的项目加入打包列表"
+                                          IsChecked="{Binding Settings.UnpacksMoveToPacks, Mode=TwoWay}" />
+                                <Border Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Background="Transparent"
+                                        ToolTip="打包列表存在项目时不会添加">
+                                    <Path Data="{StaticResource QuestionGeometry}"
+                                          Fill="{DynamicResource AccentBrush}"
+                                          Style="{StaticResource PathIcon12Style}" />
+                                </Border>
+                            </Grid>
+                            <CheckBox Margin="30,10,0,0"
+                                      HorizontalAlignment="Left"
+                                      Content="解包列表完成后立即打包"
+                                      IsChecked="{Binding Settings.PackUnpacks, Mode=TwoWay}"
+                                      IsEnabled="{Binding IsChecked, ElementName=CheckBoxUnpacksMoveToPacks}" />
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1"
+                              Grid.Column="1"
+                              Margin="5,10,0,0"
+                              hui:GroupBoxAttaches.CornerRadius="10"
+                              hui:GroupBoxAttaches.HasBodyBorder="True"
+                              hui:GroupBoxAttaches.HeaderMinSize="32">
+                        <GroupBox.Header>
+                            <TextBlock Margin="10,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Text="打包设置" />
+                        </GroupBox.Header>
+                        <StackPanel Margin="10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox HorizontalAlignment="Left"
+                                          Content="移除广告页"
+                                          IsChecked="{Binding Settings.DeleteAD, Mode=TwoWay}" />
+                                <Border Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        Background="Transparent"
+                                        ToolTip="打包速度慢">
+                                    <Path Data="{StaticResource QuestionGeometry}"
+                                          Fill="{DynamicResource AccentBrush}"
+                                          Style="{StaticResource PathIcon12Style}" />
+                                </Border>
+                                <Button Grid.Column="2"
+                                        Margin="10,0,0,0"
+                                        Command="{Binding EditADsCommand}">
+                                    <Path Margin="5"
+                                          Data="{StaticResource MoreHorizontalGeometry}"
+                                          Style="{StaticResource PathIcon16Style}" />
+                                </Button>
+                            </Grid>
+                            <CheckBox Margin="0,10,0,0"
+                                      HorizontalAlignment="Left"
+                                      Content="添加顶层标题文件夹"
+                                      IsChecked="{Binding Settings.AddTopTitle, Mode=TwoWay}" />
+                            <CheckBox Margin="0,10,0,0"
+                                      HorizontalAlignment="Left"
+                                      Content="在文件名尾部添加标签"
+                                      IsChecked="{Binding Settings.AddTag, Mode=TwoWay}" />
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Margin="30,0,0,0"
+                                          IsEditable="True"
+                                          ItemsSource="{Binding Settings.Tags, Mode=OneWay}"
+                                          Text="{Binding Settings.SelectedTag, Mode=TwoWay}" />
+                                <Button Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        Command="{Binding EditTagsCommand}">
+                                    <Path Margin="5"
+                                          Data="{StaticResource MoreHorizontalGeometry}"
+                                          Style="{StaticResource PathIcon16Style}" />
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </Expander>
+        </Grid>
+        <hui:DialogHost x:Name="MainDialogHost" Margin="0,0,0,-2" />
+        <hui:DialogHost x:Name="SubDialogHost" Margin="0,0,0,-2" />
+    </Grid>
+</hui:Window>
