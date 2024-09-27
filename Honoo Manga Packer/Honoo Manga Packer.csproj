@@ -7,8 +7,8 @@
 	<PackageId>Honoo.MangaPacker</PackageId>
 	<Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<Company>Loki Honoo</Company>
-	<Authors>Loki Honoo</Authors>
+	<Company>LokiHonoo</Company>
+	<Authors>LokiHonoo</Authors>
 	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	<Copyright>Copyright (C) LokiHonoo 2021. All rights reserved.</Copyright>
 	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
