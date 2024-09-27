@@ -7,10 +7,10 @@
 	<PackageId>Honoo.MangaPacker</PackageId>
 	<Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<Company>LokiHonoo</Company>
-	<Authors>LokiHonoo</Authors>
+	<Company>Loki Honoo</Company>
+	<Authors>Loki Honoo</Authors>
 	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-	<Copyright>Copyright (C) LokiHonoo 2021. All rights reserved.</Copyright>
+	<Copyright>Copyright (C) Loki Honoo 2021. All rights reserved.</Copyright>
 	<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
