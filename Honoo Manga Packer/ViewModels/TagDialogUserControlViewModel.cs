@@ -83,8 +83,7 @@ namespace Honoo.MangaPacker.ViewModels
 
         private void RemoveTagExecute(string? tag)
         {
-            DialogOptions dialogOptions = new() { Buttons = DialogButtons.YesNo, Image = DialogImage.Information };
-            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{tag}\"？", string.Empty, dialogOptions, (e) =>
+            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{tag}\"？", string.Empty, DialogButtons.YesNo, DialogImage.Information, DialogOptions.Simplest, (e) =>
             {
                 if (e.DialogResult == DialogResult.Yes)
                 {

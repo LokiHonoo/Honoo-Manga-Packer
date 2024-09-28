@@ -13,6 +13,7 @@ using System.Windows.Input;
 
 namespace Honoo.MangaPacker.ViewModels
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1515:考虑将公共类型设为内部类型", Justification = "<挂起>")]
     public sealed class MainWindowViewModel : ObservableObject
     {
         private readonly Settings _settings = ModelLocator.Settings;
@@ -29,13 +30,11 @@ namespace Honoo.MangaPacker.ViewModels
             this.PackCommand = new RelayCommand(PackExecute);
             this.PackClearCommand = new RelayCommand(PackClearExecute, () => { return !this.PackWorkbench.IsRunning; });
             this.EditPasswordsCommand = new RelayCommand(EditPasswordsExecute);
-            this.EditADsCommand = new RelayCommand(EditADsExecute);
             this.EditTagsCommand = new RelayCommand(EditTagsExecute);
             this.ViewErrorCommand = new RelayCommand(ViewErrorExecute);
         }
 
         public ICommand BrowserWorkDirectlyCommand { get; set; }
-        public ICommand EditADsCommand { get; set; }
         public ICommand EditPasswordsCommand { get; set; }
         public ICommand EditTagsCommand { get; set; }
         public ICommand PackClearCommand { get; set; }
@@ -60,11 +59,6 @@ namespace Honoo.MangaPacker.ViewModels
             {
                 this.Settings.WorkDirectly = dialog.FolderName;
             }
-        }
-
-        private void EditADsExecute()
-        {
-            DialogManager.Default.Show(new ADDialogUserControl(), new ADDialogHeaderUserControl());
         }
 
         private void EditPasswordsExecute()

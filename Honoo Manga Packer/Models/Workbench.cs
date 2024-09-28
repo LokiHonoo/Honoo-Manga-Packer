@@ -2,7 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 
-namespace Honoo.MangaPacker.ViewModels
+namespace Honoo.MangaPacker.Models
 {
     public sealed class Workbench : ObservableObject
     {

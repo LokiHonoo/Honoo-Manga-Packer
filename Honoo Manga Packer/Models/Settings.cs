@@ -6,14 +6,16 @@ using System.IO;
 
 namespace Honoo.MangaPacker.Models
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1515:考虑将公共类型设为内部类型", Justification = "<挂起>")]
     public sealed class Settings : ObservableObject
     {
-        private readonly ObservableDictionary<string, string> _ads = [];
+        private readonly ObservableDictionary<string, int> _ads = [];
         private readonly ObservableCollection<string> _errorMessages = [];
         private readonly ObservableCollection<string[]> _passwords = [];
         private readonly ObservableCollection<string> _tags = ["[中国翻訳]"];
         private bool _addTag;
         private bool _addTopTitle;
+        private string _adToken = string.Empty;
         private bool _deleteAD;
         private bool _executeAtDrop;
         private bool _moveToRecycleBin;
@@ -23,15 +25,15 @@ namespace Honoo.MangaPacker.Models
         private string _selectedTag = string.Empty;
         private bool _settingExpanded = true;
         private bool _tagRemoveConfirm = true;
-        private string _token = string.Empty;
         private bool _topmost;
         private bool _unpacksMoveToPacks;
         private int _windowLeft = 300;
         private int _windowTop = 300;
-        private string _workDirectly = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MangaPack");
+        private string _workDirectly = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MangaPacker");
         public bool AddTag { get => _addTag; set => SetProperty(ref _addTag, value); }
         public bool AddTopTitle { get => _addTopTitle; set => SetProperty(ref _addTopTitle, value); }
-        public ObservableDictionary<string, string> ADs => _ads;
+        public ObservableDictionary<string, int> ADs => _ads;
+        public string ADToken { get => _adToken; set => SetProperty(ref _adToken, value); }
         public bool DeleteAD { get => _deleteAD; set => SetProperty(ref _deleteAD, value); }
         public ObservableCollection<string> ErrorMessages => _errorMessages;
         public bool ExecuteAtDrop { get => _executeAtDrop; set => SetProperty(ref _executeAtDrop, value); }
@@ -44,7 +46,6 @@ namespace Honoo.MangaPacker.Models
         public bool SettingExpanded { get => _settingExpanded; set => SetProperty(ref _settingExpanded, value); }
         public bool TagRemoveConfirm { get => _tagRemoveConfirm; set => SetProperty(ref _tagRemoveConfirm, value); }
         public ObservableCollection<string> Tags => _tags;
-        public string Token { get => _token; set => SetProperty(ref _token, value); }
         public bool Topmost { get => _topmost; set => SetProperty(ref _topmost, value); }
         public bool UnpacksMoveToPacks { get => _unpacksMoveToPacks; set => SetProperty(ref _unpacksMoveToPacks, value); }
         public int WindowLeft { get => _windowLeft; set => SetProperty(ref _windowLeft, value); }

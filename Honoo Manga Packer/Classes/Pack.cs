@@ -20,6 +20,7 @@ namespace Honoo.MangaPacker.Classes
 
         internal static WriterOptions WriterOptions { get => _writerOptions; set => _writerOptions = value; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:丢失范围之前释放对象", Justification = "<挂起>")]
         internal static bool Do(string path, Settings settings, out Tuple<string, string, bool, Exception?> log)
         {
             if (Directory.Exists(path))
@@ -76,9 +77,7 @@ namespace Honoo.MangaPacker.Classes
                             {
                                 key = $"{title}{key}";
                             }
-#pragma warning disable CA2000 // 丢失范围之前释放对象
                             var entry = archive.AddEntry(key, new FileStream(file, FileMode.Open), true);
-#pragma warning restore CA2000 // 丢失范围之前释放对象
                             if (settings.DeleteAD)
                             {
                                 string crc = Convert.ToString(entry.Crc, 16).ToUpperInvariant();

@@ -52,8 +52,7 @@ namespace Honoo.MangaPacker.ViewModels
 
         private void RemovePasswordExecute(string? password)
         {
-            DialogOptions dialogOptions = new() { Buttons = DialogButtons.YesNo, Image = DialogImage.Information };
-            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{password}\"？", string.Empty, dialogOptions, (e) =>
+            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{password}\"？", string.Empty, DialogButtons.YesNo, DialogImage.Information, DialogOptions.Simplest, (e) =>
             {
                 if (e.DialogResult == DialogResult.Yes)
                 {
