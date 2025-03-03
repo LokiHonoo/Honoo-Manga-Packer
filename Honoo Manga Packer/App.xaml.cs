@@ -56,13 +56,9 @@ namespace Honoo.MangaPacker
                 ModelLocator.Settings.Topmost = manager.Default.Properties.GetValue("Topmost", new XString(ModelLocator.Settings.Topmost.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.SettingExpanded = manager.Default.Properties.GetValue("SettingExpanded", new XString(ModelLocator.Settings.SettingExpanded.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.WorkDirectly = manager.Default.Properties.GetValue("WorkDirectly", new XString(ModelLocator.Settings.WorkDirectly)).GetStringValue();
-                ModelLocator.Settings.ExecuteAtDrop = manager.Default.Properties.GetValue("ExecuteAtDrop", new XString(ModelLocator.Settings.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.ResetName = manager.Default.Properties.GetValue("ResetName", new XString(ModelLocator.Settings.ResetName.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.MoveToRecycleBin = manager.Default.Properties.GetValue("MoveToRecycleBin", new XString(ModelLocator.Settings.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-                ModelLocator.Settings.UnpacksMoveToPacks = manager.Default.Properties.GetValue("UnpacksMoveToPacks", new XString(ModelLocator.Settings.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-                ModelLocator.Settings.PackUnpacks = manager.Default.Properties.GetValue("PackUnpacks", new XString(ModelLocator.Settings.PackUnpacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-                ModelLocator.Settings.DeleteAD = manager.Default.Properties.GetValue("DeleteAD", new XString(ModelLocator.Settings.DeleteAD.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-                ModelLocator.Settings.AddTopTitle = manager.Default.Properties.GetValue("AddTopTitle", new XString(ModelLocator.Settings.AddTopTitle.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+                ModelLocator.Settings.ExecuteAtDrop = manager.Default.Properties.GetValue("ExecuteAtDrop", new XString(ModelLocator.Settings.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 if (manager.Default.Properties.TryGetValue("Passwords", out XDictionary passwords))
                 {
                     List<string[]> ps = [];
@@ -78,6 +74,11 @@ namespace Honoo.MangaPacker
                     }
                 }
                 ModelLocator.Settings.PasswordRemoveConfirm = manager.Default.Properties.GetValue("PasswordRemoveConfirm", new XString(ModelLocator.Settings.PasswordRemoveConfirm.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+                ModelLocator.Settings.UnpacksMoveToPacks = manager.Default.Properties.GetValue("UnpacksMoveToPacks", new XString(ModelLocator.Settings.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+                ModelLocator.Settings.PackUnpacks = manager.Default.Properties.GetValue("PackUnpacks", new XString(ModelLocator.Settings.PackUnpacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+                ModelLocator.Settings.DeleteAD = manager.Default.Properties.GetValue("DeleteAD", new XString(ModelLocator.Settings.DeleteAD.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+                ModelLocator.Settings.AddTopTitle = manager.Default.Properties.GetValue("AddTopTitle", new XString(ModelLocator.Settings.AddTopTitle.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+
                 if (manager.Default.Properties.TryGetValue("Tags", out XList tags))
                 {
                     ModelLocator.Settings.Tags.Clear();
@@ -114,19 +115,20 @@ namespace Honoo.MangaPacker
                 manager.Default.Properties.AddOrUpdate("Topmost", new XString(ModelLocator.Settings.Topmost.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("SettingExpanded", new XString(ModelLocator.Settings.SettingExpanded.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("WorkDirectly", new XString(ModelLocator.Settings.WorkDirectly));
-                manager.Default.Properties.AddOrUpdate("ExecuteAtDrop", new XString(ModelLocator.Settings.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("ResetName", new XString(ModelLocator.Settings.ResetName.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("MoveToRecycleBin", new XString(ModelLocator.Settings.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture)));
-                manager.Default.Properties.AddOrUpdate("UnpacksMoveToPacks", new XString(ModelLocator.Settings.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture)));
-                manager.Default.Properties.AddOrUpdate("PackUnpacks", new XString(ModelLocator.Settings.PackUnpacks.ToString(CultureInfo.InvariantCulture)));
-                manager.Default.Properties.AddOrUpdate("DeleteAD", new XString(ModelLocator.Settings.DeleteAD.ToString(CultureInfo.InvariantCulture)));
-                manager.Default.Properties.AddOrUpdate("AddTopTitle", new XString(ModelLocator.Settings.AddTopTitle.ToString(CultureInfo.InvariantCulture)));
+                manager.Default.Properties.AddOrUpdate("ExecuteAtDrop", new XString(ModelLocator.Settings.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture)));
                 XDictionary passwords = manager.Default.Properties.AddOrUpdate("Passwords", new XDictionary());
                 foreach (var password in ModelLocator.Settings.Passwords)
                 {
                     passwords.Properties.AddOrUpdate(password[0], new XString(password[1].ToString(CultureInfo.InvariantCulture)));
                 }
                 manager.Default.Properties.AddOrUpdate("PasswordRemoveConfirm", new XString(ModelLocator.Settings.PasswordRemoveConfirm.ToString(CultureInfo.InvariantCulture)));
+
+                manager.Default.Properties.AddOrUpdate("UnpacksMoveToPacks", new XString(ModelLocator.Settings.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture)));
+                manager.Default.Properties.AddOrUpdate("PackUnpacks", new XString(ModelLocator.Settings.PackUnpacks.ToString(CultureInfo.InvariantCulture)));
+                manager.Default.Properties.AddOrUpdate("DeleteAD", new XString(ModelLocator.Settings.DeleteAD.ToString(CultureInfo.InvariantCulture)));
+                manager.Default.Properties.AddOrUpdate("AddTopTitle", new XString(ModelLocator.Settings.AddTopTitle.ToString(CultureInfo.InvariantCulture)));
                 XList tags = manager.Default.Properties.AddOrUpdate("Tags", new XList());
                 foreach (var tag in ModelLocator.Settings.Tags)
                 {
