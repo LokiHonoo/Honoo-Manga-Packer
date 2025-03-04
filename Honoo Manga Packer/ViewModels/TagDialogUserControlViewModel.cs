@@ -83,19 +83,25 @@ namespace Honoo.MangaPacker.ViewModels
 
         private void RemoveTagExecute(string? tag)
         {
-            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{tag}\"？", string.Empty, DialogButtons.YesNo, DialogImage.Information, DialogOptions.Simplest, (e) =>
-            {
-                if (e.DialogResult == DialogResult.Yes)
+            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{tag}\"？", string.Empty,
+                DialogButtons.YesNo,
+                DialogCloseButton.Display,
+                DialogImage.Information,
+                ModelLocator.DialogOptionsAuto,
+                null,
+                (e) =>
                 {
-                    for (int i = this.Settings.Tags.Count - 1; i >= 0; i--)
+                    if (e.DialogResult == DialogResult.Yes)
                     {
-                        if (tag == this.Settings.Tags[i])
+                        for (int i = this.Settings.Tags.Count - 1; i >= 0; i--)
                         {
-                            this.Settings.Tags.RemoveAt(i);
+                            if (tag == this.Settings.Tags[i])
+                            {
+                                this.Settings.Tags.RemoveAt(i);
+                            }
                         }
                     }
-                }
-            }, null);
+                }, null);
         }
     }
 }

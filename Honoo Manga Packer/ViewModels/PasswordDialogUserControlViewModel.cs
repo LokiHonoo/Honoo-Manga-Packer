@@ -52,19 +52,25 @@ namespace Honoo.MangaPacker.ViewModels
 
         private void RemovePasswordExecute(string? password)
         {
-            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{password}\"？", string.Empty, DialogButtons.YesNo, DialogImage.Information, DialogOptions.Simplest, (e) =>
-            {
-                if (e.DialogResult == DialogResult.Yes)
+            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{password}\"？", string.Empty, 
+                DialogButtons.YesNo,
+                DialogCloseButton.Display,
+                DialogImage.Information,
+                ModelLocator.DialogOptionsAuto,
+                null,
+                (e) =>
                 {
-                    for (int i = this.Settings.Passwords.Count - 1; i >= 0; i--)
+                    if (e.DialogResult == DialogResult.Yes)
                     {
-                        if (password == this.Settings.Passwords[i][0])
+                        for (int i = this.Settings.Passwords.Count - 1; i >= 0; i--)
                         {
-                            this.Settings.Passwords.RemoveAt(i);
+                            if (password == this.Settings.Passwords[i][0])
+                            {
+                                this.Settings.Passwords.RemoveAt(i);
+                            }
                         }
                     }
-                }
-            }, null);
+                }, null);
         }
     }
 }
