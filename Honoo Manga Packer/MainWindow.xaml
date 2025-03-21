@@ -104,6 +104,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.Resources>
                             <hui:BooleanToCustomConverter
@@ -111,19 +112,30 @@
                                 FalseValue="解 包"
                                 TrueValue="取 消" />
                         </Grid.Resources>
+                        <ComboBox
+                            Grid.Column="0"
+                            Padding="7"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            IsEnabled="{Binding UnpackWorkbench.IsRunning, Converter={x:Static hui:BooleanReverseConverter.Instance}, Mode=OneWay}"
+                            ItemsSource="{Binding Settings.UnpackEncodings}"
+                            Text="{Binding Settings.UnpackEncoding, Mode=TwoWay}" />
                         <Button
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
                             Padding="7"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             d:Visibility="Visible"
-                            Command="{Binding ViewErrorCommand}"
+                            Command="{Binding ViewUnpackErrorCommand}"
                             Content="{StaticResource ExclamationGeometry}"
                             ContentTemplate="{StaticResource GeometryToPathIcon16DataTemplate}"
                             Foreground="Red"
                             Style="{StaticResource ButtonTransparentStyle}"
                             Visibility="{Binding UnpackWorkbench.HasError, Converter={x:Static hui:BooleanToVisibilityVisibleConverter.Instance}, Mode=OneWay}" />
+
                         <Button
-                            Grid.Column="1"
+                            Grid.Column="2"
                             Margin="5,0,0,0"
                             Padding="7"
                             VerticalAlignment="Center"
@@ -191,6 +203,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.Resources>
                             <hui:BooleanToCustomConverter
@@ -199,18 +212,20 @@
                                 TrueValue="取 消" />
                         </Grid.Resources>
                         <Button
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
                             Padding="7"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             d:Visibility="Visible"
-                            Command="{Binding ViewErrorCommand}"
+                            Command="{Binding ViewPackErrorCommand}"
                             Content="{StaticResource ExclamationGeometry}"
                             ContentTemplate="{StaticResource GeometryToPathIcon16DataTemplate}"
                             Foreground="Red"
                             Style="{StaticResource ButtonTransparentStyle}"
                             Visibility="{Binding PackWorkbench.HasError, Converter={x:Static hui:BooleanToVisibilityVisibleConverter.Instance}, Mode=OneWay}" />
                         <Button
-                            Grid.Column="1"
+                            Grid.Column="2"
                             Margin="5,0,0,0"
                             Padding="7"
                             VerticalAlignment="Center"
@@ -221,7 +236,7 @@
                             IsEnabled="{Binding PackWorkbench.IsRunning, Converter={x:Static hui:BooleanReverseConverter.Instance}, Mode=OneWay}"
                             Visibility="{Binding Settings.ExecuteAtDrop, Converter={x:Static hui:BooleanToVisibilityCollapsedConverter.Instance}, Mode=OneWay}" />
                         <Button
-                            Grid.Column="2"
+                            Grid.Column="3"
                             Margin="5,0,0,0"
                             Padding="7"
                             VerticalAlignment="Center"
@@ -239,8 +254,8 @@
                 Margin="0,10,0,0"
                 d:IsExpanded="True"
                 hui:ExpanderAttaches.CornerRadius="10"
-                hui:ExpanderAttaches.DisplayBodyBorder="True"
                 hui:ExpanderAttaches.HeaderMinSize="32"
+                hui:ExpanderAttaches.IsBodyBorderDisplayed="True"
                 IsExpanded="{Binding Settings.SettingExpanded, Mode=TwoWay}">
                 <Expander.Header>
                     <StackPanel
@@ -251,7 +266,7 @@
                         <TextBlock Margin="10,0,0,0" Text="设置" />
                     </StackPanel>
                 </Expander.Header>
-                <Grid Margin="10">
+                <Grid Margin="10" IsEnabled="{Binding UnpackWorkbench.IsRunning, Converter={x:Static hui:BooleanReverseConverter.Instance}, Mode=OneWay}">
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
@@ -263,8 +278,8 @@
                     <GroupBox
                         Grid.ColumnSpan="2"
                         hui:GroupBoxAttaches.CornerRadius="10"
-                        hui:GroupBoxAttaches.DisplayBodyBorder="True"
-                        hui:GroupBoxAttaches.HeaderMinSize="32">
+                        hui:GroupBoxAttaches.HeaderMinSize="32"
+                        hui:GroupBoxAttaches.IsBodyBorderDisplayed="True">
                         <GroupBox.Header>
                             <TextBlock
                                 Margin="10,0,0,0"
@@ -338,8 +353,8 @@
                         Grid.Row="1"
                         Margin="0,10,5,0"
                         hui:GroupBoxAttaches.CornerRadius="10"
-                        hui:GroupBoxAttaches.DisplayBodyBorder="True"
-                        hui:GroupBoxAttaches.HeaderMinSize="32">
+                        hui:GroupBoxAttaches.HeaderMinSize="32"
+                        hui:GroupBoxAttaches.IsBodyBorderDisplayed="True">
                         <GroupBox.Header>
                             <TextBlock
                                 Margin="10,0,0,0"
@@ -366,6 +381,11 @@
                                         Style="{StaticResource PathIcon16Style}" />
                                 </Button>
                             </Grid>
+                            <CheckBox
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Left"
+                                Content="解包前清理工作文件夹/Unpacks/"
+                                IsChecked="{Binding Settings.UnpackClearWorkDirectly, Mode=TwoWay}" />
                             <Grid Margin="0,10,0,0" HorizontalAlignment="Left">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
@@ -387,12 +407,28 @@
                                         Style="{StaticResource PathIcon12Style}" />
                                 </Border>
                             </Grid>
-                            <CheckBox
-                                Margin="30,10,0,0"
-                                HorizontalAlignment="Left"
-                                Content="解包列表完成后立即打包"
-                                IsChecked="{Binding Settings.PackUnpacks, Mode=TwoWay}"
-                                IsEnabled="{Binding IsChecked, ElementName=CheckBoxUnpacksMoveToPacks}" />
+                            <Grid Margin="30,10,0,0" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox
+                                    Content="解包列表完成后立即打包"
+                                    IsChecked="{Binding Settings.PackUnpacks, Mode=TwoWay}"
+                                    IsEnabled="{Binding IsChecked, ElementName=CheckBoxUnpacksMoveToPacks}" />
+                                <Border
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    ToolTip="解包有错误时不会执行。">
+                                    <Path
+                                        Data="{StaticResource QuestionGeometry}"
+                                        Fill="{DynamicResource AccentBrush}"
+                                        Style="{StaticResource PathIcon12Style}" />
+                                </Border>
+                            </Grid>
+
                         </StackPanel>
                     </GroupBox>
                     <GroupBox
@@ -400,8 +436,8 @@
                         Grid.Column="1"
                         Margin="5,10,0,0"
                         hui:GroupBoxAttaches.CornerRadius="10"
-                        hui:GroupBoxAttaches.DisplayBodyBorder="True"
-                        hui:GroupBoxAttaches.HeaderMinSize="32">
+                        hui:GroupBoxAttaches.HeaderMinSize="32"
+                        hui:GroupBoxAttaches.IsBodyBorderDisplayed="True">
                         <GroupBox.Header>
                             <TextBlock
                                 Margin="10,0,0,0"
@@ -409,7 +445,11 @@
                                 Text="打包设置" />
                         </GroupBox.Header>
                         <StackPanel Margin="10">
-                            <Grid>
+                            <CheckBox
+                                HorizontalAlignment="Left"
+                                Content="打包前清理工作文件夹/Packs/"
+                                IsChecked="{Binding Settings.PackClearWorkDirectly, Mode=TwoWay}" />
+                            <Grid Margin="0,10,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition />
@@ -418,7 +458,8 @@
                                 <CheckBox
                                     HorizontalAlignment="Left"
                                     Content="移除广告页"
-                                    IsChecked="{Binding Settings.DeleteAD, Mode=TwoWay}" />
+                                    IsChecked="{Binding Settings.DeleteAD, Mode=TwoWay}"
+                                    IsEnabled="False" />
                                 <Border
                                     Grid.Column="1"
                                     Margin="10,0,0,0"

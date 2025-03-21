@@ -1,5 +1,4 @@
-﻿using Honoo.MangaPacker.Models;
-using Microsoft.VisualBasic.FileIO;
+﻿using Microsoft.VisualBasic.FileIO;
 using PdfiumViewer;
 using SharpCompress.Archives;
 using SharpCompress.Common;
@@ -12,7 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace Honoo.MangaPacker.Classes
+namespace Honoo.MangaPacker.Models
 {
     internal static class Unpack
     {
@@ -22,13 +21,7 @@ namespace Honoo.MangaPacker.Classes
             ExtractFullPath = true
         };
 
-        private static readonly ReaderOptions _readerOptions = new()
-        {
-            ArchiveEncoding = new ArchiveEncoding(Encoding.UTF32, Encoding.UTF32),
-            LookForHeader = true
-        };
-
-        internal static bool Do(string path, Settings settings, out Tuple<string, string, bool, Exception?> log)
+        internal static bool Do(string path, Settings settings, out Tuple<bool, string, Exception?> log)
         {
             if (File.Exists(path))
             {
@@ -38,22 +31,22 @@ namespace Honoo.MangaPacker.Classes
                     case ".ZIP": case ".RAR": case ".7Z": return TryDoZip(path, settings, out log);
                     case ".PDF": return TryDoPdf(path, settings, out log);
                     default:
-                        log = new Tuple<string, string, bool, Exception?>(path, string.Empty, false, new IOException($"Unsupported file extension - \"{ext}\"."));
+                        log = new Tuple<bool, string, Exception?>(false, path, new IOException($"Unsupported file extension - \"{ext}\"."));
                         return false;
                 }
             }
-            log = new Tuple<string, string, bool, Exception?>(path, string.Empty, false, new FileNotFoundException("File not exists."));
+            log = new Tuple<bool, string, Exception?>(false, path, new FileNotFoundException("File not exists."));
             return false;
         }
 
-        private static bool TryDoPdf(string path, Settings settings, out Tuple<string, string, bool, Exception?> log)
+        private static bool TryDoPdf(string path, Settings settings, out Tuple<bool, string, Exception?> log)
         {
             string title = Path.GetFileNameWithoutExtension(path);
             string dir = Path.Combine(settings.WorkDirectly, "Unpacks", title);
             int n = 1;
             while (Directory.Exists(dir))
             {
-                dir = Path.Combine(settings.WorkDirectly, $"{title} ({n})");
+                dir = Path.Combine(settings.WorkDirectly, "Unpacks", $"{title} ({n})");
                 n++;
             }
             try
@@ -71,18 +64,18 @@ namespace Honoo.MangaPacker.Classes
             }
             catch (Exception ex)
             {
-                log = new Tuple<string, string, bool, Exception?>(path, string.Empty, false, ex);
+                log = new Tuple<bool, string, Exception?>(false, path, ex);
                 return false;
             }
             if (settings.MoveToRecycleBin)
             {
                 FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
             }
-            log = new Tuple<string, string, bool, Exception?>(path, dir, true, null);
+            log = new Tuple<bool, string, Exception?>(true, path, null);
             return true;
         }
 
-        private static bool TryDoZip(string path, Settings settings, out Tuple<string, string, bool, Exception?> log)
+        private static bool TryDoZip(string path, Settings settings, out Tuple<bool, string, Exception?> log)
         {
             string title = Path.GetFileNameWithoutExtension(path);
             string tmp = Path.Combine(settings.WorkDirectly, "Unpacks", Path.GetRandomFileName());
@@ -92,30 +85,32 @@ namespace Honoo.MangaPacker.Classes
             }
             catch (Exception ex)
             {
-                log = new Tuple<string, string, bool, Exception?>(path, string.Empty, false, ex);
+                log = new Tuple<bool, string, Exception?>(false, path, ex);
                 return false;
             }
-            _readerOptions.Password = null;
-            if (!TryDoZip(path, tmp, out Exception? exception))
+            Encoding encoding = Encoding.GetEncoding(settings.UnpackEncoding);
+            var readerOptions = new ReaderOptions()
+            {
+                ArchiveEncoding = new ArchiveEncoding(encoding, encoding),
+                LookForHeader = true,
+                Password = null
+            };
+            if (!TryDoZip(path, tmp, readerOptions, out Exception? exception))
             {
                 bool extracted = false;
-                foreach (var password in settings.Passwords)
+                foreach (var password in settings.Passwords.Keys)
                 {
-                    _readerOptions.Password = password[0];
-                    if (TryDoZip(path, tmp, out exception))
+                    readerOptions.Password = password;
+                    if (TryDoZip(path, tmp, readerOptions, out exception))
                     {
-                        if (!int.TryParse(password[1], out int weights))
-                        {
-                            weights = 0;
-                        }
-                        password[1] = (weights + 1).ToString(CultureInfo.InvariantCulture);
+                        settings.Passwords[password]++;
                         extracted = true;
                         break;
                     }
                 }
                 if (!extracted)
                 {
-                    log = new Tuple<string, string, bool, Exception?>(path, string.Empty, false, exception);
+                    log = new Tuple<bool, string, Exception?>(false, path, exception);
                     return false;
                 }
             }
@@ -136,11 +131,11 @@ namespace Honoo.MangaPacker.Classes
                     f = Directory.GetFiles(deepDir);
                 }
             }
-            string dir = Path.Combine(settings.WorkDirectly, title);
+            string dir = Path.Combine(settings.WorkDirectly, "Unpacks", title);
             int n = 1;
             while (Directory.Exists(dir))
             {
-                dir = Path.Combine(settings.WorkDirectly, $"{title} ({n})");
+                dir = Path.Combine(settings.WorkDirectly, "Unpacks", $"{title} ({n})");
                 n++;
             }
             Directory.Move(deepDir, dir);
@@ -168,15 +163,15 @@ namespace Honoo.MangaPacker.Classes
             {
                 FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
             }
-            log = new Tuple<string, string, bool, Exception?>(path, dir, true, null);
+            log = new Tuple<bool, string, Exception?>(true, path, null);
             return true;
         }
 
-        private static bool TryDoZip(string path, string dir, out Exception? exception)
+        private static bool TryDoZip(string path, string dir, ReaderOptions readerOptions, out Exception? exception)
         {
             try
             {
-                using (IArchive archive = ArchiveFactory.Open(path, _readerOptions))
+                using (IArchive archive = ArchiveFactory.Open(path, readerOptions))
                 {
                     archive.WriteToDirectory(dir, _extractionOptions);
                 }

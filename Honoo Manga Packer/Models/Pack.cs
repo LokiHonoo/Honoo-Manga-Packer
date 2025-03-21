@@ -1,5 +1,4 @@
-﻿using Honoo.MangaPacker.Models;
-using Microsoft.VisualBasic.FileIO;
+﻿using Microsoft.VisualBasic.FileIO;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Honoo.MangaPacker.Classes
+namespace Honoo.MangaPacker.Models
 {
     internal static class Pack
     {
@@ -20,8 +19,7 @@ namespace Honoo.MangaPacker.Classes
 
         internal static WriterOptions WriterOptions { get => _writerOptions; set => _writerOptions = value; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:丢失范围之前释放对象", Justification = "<挂起>")]
-        internal static bool Do(string path, Settings settings, out Tuple<string, string, bool, Exception?> log)
+        internal static bool Do(string path, Settings settings, out Tuple<bool, string, Exception?> log)
         {
             if (Directory.Exists(path))
             {
@@ -60,11 +58,11 @@ namespace Honoo.MangaPacker.Classes
                 }
                 if (files.Count > 0)
                 {
-                    string zip = Path.Combine(settings.WorkDirectly, $"{title}.zip");
+                    string zip = Path.Combine(settings.WorkDirectly, "Packs", $"{title}.zip");
                     int n = 1;
                     while (File.Exists(zip))
                     {
-                        zip = Path.Combine(settings.WorkDirectly, $"{title} ({n}).zip");
+                        zip = Path.Combine(settings.WorkDirectly, "Packs", $"{title} ({n}).zip");
                         n++;
                     }
                     try
@@ -92,20 +90,20 @@ namespace Honoo.MangaPacker.Classes
                     }
                     catch (Exception ex)
                     {
-                        log = new(path, string.Empty, false, ex);
+                        log = new(false, path, ex);
                         return false;
                     }
                     if (settings.MoveToRecycleBin)
                     {
                         FileSystem.DeleteDirectory(path, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
                     }
-                    log = new Tuple<string, string, bool, Exception?>(path, zip, true, null);
+                    log = new Tuple<bool, string, Exception?>(true, path, null);
                     return true;
                 }
-                log = new Tuple<string, string, bool, Exception?>(path, string.Empty, false, new FileNotFoundException("Connnot find files."));
+                log = new Tuple<bool, string, Exception?>(false, path, new FileNotFoundException("Connnot find files."));
                 return false;
             }
-            log = new Tuple<string, string, bool, Exception?>(path, string.Empty, false, new DirectoryNotFoundException("Directory not exists."));
+            log = new Tuple<bool, string, Exception?>(false, path, new DirectoryNotFoundException("Directory not exists."));
             return false;
         }
     }

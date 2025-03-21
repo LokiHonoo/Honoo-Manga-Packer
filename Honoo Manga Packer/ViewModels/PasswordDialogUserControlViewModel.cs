@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Honoo.Collections.ObjectModel;
 using Honoo.MangaPacker.Models;
 using HonooUI.WPF;
-using System.Globalization;
 using System.Windows.Input;
 
 namespace Honoo.MangaPacker.ViewModels
@@ -14,8 +14,8 @@ namespace Honoo.MangaPacker.ViewModels
 
         public PasswordDialogUserControlViewModel()
         {
-            this.AddPasswordCommand = new RelayCommand(AddPasswordExecute, () => { return !string.IsNullOrWhiteSpace(this.Password); });
-            this.RemovePasswordCommand = new RelayCommand<string?>(RemovePasswordExecute);
+            this.AddPasswordCommand = new RelayCommand(AddPassword, () => { return !string.IsNullOrWhiteSpace(this.Password); });
+            this.RemovePasswordCommand = new RelayCommand<string?>(RemovePassword);
         }
 
         public ICommand AddPasswordCommand { get; set; }
@@ -32,45 +32,40 @@ namespace Honoo.MangaPacker.ViewModels
         public ICommand RemovePasswordCommand { get; set; }
         public Settings Settings => _settings;
 
-        private void AddPasswordExecute()
+        private void AddPassword()
         {
-            int weights = 0;
-            for (int i = this.Settings.Passwords.Count - 1; i >= 0; i--)
+            var psswords = new ObservableDictionary<string, int>();
+            if (this.Settings.Passwords.TryGetValue(this.Password, out int weights))
             {
-                if (this.Password == this.Settings.Passwords[i][0])
-                {
-                    if (int.TryParse(this.Settings.Passwords[i][1], out int w))
-                    {
-                        weights += w;
-                    }
-                    this.Settings.Passwords.RemoveAt(i);
-                }
+                this.Settings.Passwords.Remove(this.Password);
             }
-            this.Settings.Passwords.Insert(0, [this.Password, weights.ToString(CultureInfo.InvariantCulture)]);
+            psswords.Add(this.Password, weights);
+            foreach (var password in this.Settings.Passwords)
+            {
+                psswords.Add(password.Key, password.Value);
+            }
+            this.Settings.Passwords = psswords;
             this.Password = string.Empty;
         }
 
-        private void RemovePasswordExecute(string? password)
+        private void RemovePassword(string? password)
         {
-            DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{password}\"？", string.Empty, 
-                DialogButtons.YesNo,
-                DialogCloseButton.Display,
-                DialogImage.Information,
-                ModelLocator.DialogOptionsAuto,
-                null,
-                (e) =>
-                {
-                    if (e.DialogResult == DialogResult.Yes)
+            if (password != null)
+            {
+                DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{password}\"？", string.Empty,
+                    DialogButtons.YesNo,
+                    DialogCloseButton.Ordinary,
+                    DialogImage.Information,
+                    ModelLocator.DialogOptionsAuto,
+                    null,
+                    (e) =>
                     {
-                        for (int i = this.Settings.Passwords.Count - 1; i >= 0; i--)
+                        if (e.DialogResult == DialogResult.Yes)
                         {
-                            if (password == this.Settings.Passwords[i][0])
-                            {
-                                this.Settings.Passwords.RemoveAt(i);
-                            }
+                            this.Settings.Passwords.Remove(password);
                         }
-                    }
-                }, null);
+                    }, null);
+            }
         }
     }
 }

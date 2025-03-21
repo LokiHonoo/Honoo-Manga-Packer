@@ -6,7 +6,7 @@ namespace Honoo.MangaPacker.Models
 {
     public sealed class Workbench : ObservableObject
     {
-        private readonly ObservableCollection<Tuple<string, string, bool, Exception?>> _Log = [];
+        private readonly ObservableCollection<Tuple<bool, string, Exception?>> _Log = [];
         private readonly ObservableCollection<string> _projects = [];
         private bool _abort;
         private bool _hasError;
@@ -15,7 +15,7 @@ namespace Honoo.MangaPacker.Models
         public bool Abort { get => _abort; set => SetProperty(ref _abort, value); }
         public bool HasError { get => _hasError; set => SetProperty(ref _hasError, value); }
         public bool IsRunning { get => _isRunning; set => SetProperty(ref _isRunning, value); }
-        public ObservableCollection<Tuple<string, string, bool, Exception?>> Log => _Log;
+        public ObservableCollection<Tuple<bool, string, Exception?>> Log => _Log;
         public double Progress { get => _progress; set => SetProperty(ref _progress, value); }
         public ObservableCollection<string> Projects => _projects;
     }

@@ -13,10 +13,10 @@ namespace Honoo.MangaPacker.ViewModels
 
         public TagDialogUserControlViewModel()
         {
-            this.AddTagCommand = new RelayCommand(AddTagExecute, () => { return !string.IsNullOrWhiteSpace(this.Tag); });
-            this.MoveUpTagCommand = new RelayCommand<string?>(MoveUpTagExecute);
-            this.MoveDownTagCommand = new RelayCommand<string?>(MoveDownExecute);
-            this.RemoveTagCommand = new RelayCommand<string?>(RemoveTagExecute);
+            this.AddTagCommand = new RelayCommand(AddTag, () => { return !string.IsNullOrWhiteSpace(this.Tag); });
+            this.MoveUpTagCommand = new RelayCommand<string?>(MoveUpTag);
+            this.MoveDownTagCommand = new RelayCommand<string?>(MoveDownTag);
+            this.RemoveTagCommand = new RelayCommand<string?>(RemoveTag);
         }
 
         public ICommand AddTagCommand { get; set; }
@@ -38,7 +38,7 @@ namespace Honoo.MangaPacker.ViewModels
             }
         }
 
-        private void AddTagExecute()
+        private void AddTag()
         {
             for (int i = this.Settings.Tags.Count - 1; i >= 0; i--)
             {
@@ -51,7 +51,7 @@ namespace Honoo.MangaPacker.ViewModels
             this.Tag = string.Empty;
         }
 
-        private void MoveDownExecute(string? tag)
+        private void MoveDownTag(string? tag)
         {
             for (int i = 0; i < this.Settings.Tags.Count; i++)
             {
@@ -66,7 +66,7 @@ namespace Honoo.MangaPacker.ViewModels
             }
         }
 
-        private void MoveUpTagExecute(string? tag)
+        private void MoveUpTag(string? tag)
         {
             for (int i = 0; i < this.Settings.Tags.Count; i++)
             {
@@ -81,11 +81,11 @@ namespace Honoo.MangaPacker.ViewModels
             }
         }
 
-        private void RemoveTagExecute(string? tag)
+        private void RemoveTag(string? tag)
         {
             DialogManager.GetDialogHost("SubDialogHost").Show($"删除 \"{tag}\"？", string.Empty,
                 DialogButtons.YesNo,
-                DialogCloseButton.Display,
+                DialogCloseButton.Ordinary,
                 DialogImage.Information,
                 ModelLocator.DialogOptionsAuto,
                 null,

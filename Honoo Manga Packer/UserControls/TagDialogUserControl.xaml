@@ -76,7 +76,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <Path Data="{StaticResource ArrowUpGeometry}" Style="{StaticResource PathIcon12Style}" />
+                            <Path Data="{StaticResource ArrowUpGeometry}" Style="{StaticResource PathIcon16Style}" />
                         </Button>
                         <Button
                             Grid.Column="2"
@@ -93,7 +93,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource PathIcon12Style}" />
+                            <Path Data="{StaticResource ArrowDownGeometry}" Style="{StaticResource PathIcon16Style}" />
                         </Button>
                         <Button
                             Grid.Column="3"
@@ -110,7 +110,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <Path Data="{StaticResource MinusCircleFillGeometry}" Style="{StaticResource PathIcon12Style}" />
+                            <Path Data="{StaticResource MinusCircleFillGeometry}" Style="{StaticResource PathIcon16Style}" />
                         </Button>
                     </Grid>
                 </DataTemplate>
