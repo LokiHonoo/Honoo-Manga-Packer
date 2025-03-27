@@ -2,8 +2,9 @@
 
 - [Honoo Manga Packer](#honoo-manga-packer)
   - [INTRODUCTION](#introduction)
+  - [SCREENSHOTS](#screenshots)
   - [CHANGELOG](#changelog)
-    - [1.4.0](#140)
+    - [1.5.2](#152)
   - [COMPONENTS](#components)
   - [LICENSE](#license)
 
@@ -11,15 +12,19 @@
 
 漫画和图包的打包辅助工具。支持 ZIP/RAR/7Z/PDF 解压缩或重新打包到无压缩 ZIP 文件。
 
-支持尝试使用密码解包加密的文件。此功能部分可用。
+支持尝试使用密码解包加密的文件。此功能部分引用 [SharpCompress](https://github.com/adamhathcock/sharpcompress)，RAR5 解压不完全可用。
 
-支持移除广告页。需要广告页采集软件生成的广告列表文件。
+移除广告页功能暂时不可用。
+
+## SCREENSHOTS
+
+![screenshots1](screenshots/screenshots1.png)
 
 ## CHANGELOG
 
-### 1.5.0
+### 1.5.2
 
-**Features* 更改配置文件格式。
+**Refactored* 重构。
 
 ## COMPONENTS
 
