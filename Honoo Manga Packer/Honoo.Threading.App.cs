@@ -7,21 +7,19 @@
 
 using System.Threading;
 
-#pragma warning disable IDE0130 // 命名空间与文件夹结构不匹配
 namespace Honoo.Threading
-#pragma warning restore IDE0130 // 命名空间与文件夹结构不匹配
 {
     /// <summary>
     /// 程序功能。
     /// </summary>
-    public static class App
+    internal static class App
     {
         private static Mutex? _mutex;
 
         /// <summary>
         /// 释放 Mutex 关闭启动检查。关闭后程序可以重复启动。
         /// </summary>
-        public static void DisableCheck()
+        internal static void DisableCheck()
         {
             _mutex?.Dispose();
         }
@@ -35,7 +33,7 @@ namespace Honoo.Threading
         /// 约束字符串不能包括特殊字符。
         /// </param>
         /// <returns></returns>
-        public static bool PrevInstance(string unique)
+        internal static bool PrevInstance(string unique)
         {
             _mutex = new Mutex(true, unique, out bool createdNew);
             if (createdNew)

@@ -5,6 +5,7 @@
  * This code page is published by the MIT license.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -15,30 +16,15 @@ namespace Honoo.Collections.ObjectModel
 #pragma warning restore IDE0130 // 命名空间与文件夹结构不匹配
 {
     /// <summary>
-    /// Represents a observable dictionary of keys and values.
+    /// Represents a observable collection of keys and values.
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    [System.Serializable]
+    [Serializable]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1515:考虑将公共类型设为内部类型", Justification = "<挂起>")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0079:请删除不必要的忽略", Justification = "<挂起>")]
     public class ObservableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, INotifyCollectionChanged, INotifyPropertyChanged where TKey : notnull
     {
-        //private int _index;
-
-        /// <summary>
-        /// Gets a number of key/value pairs contained in the <see cref="Dictionary&lt;TKey, TValue&gt;"/>.
-        /// </summary>
-        public new int Count => base.Count;
-
-        /// <summary>
-        /// Gets a collection containing the keys in the <see cref="Dictionary&lt;TKey, TValue&gt;"/>.
-        /// </summary>
-        public new KeyCollection Keys => base.Keys;
-
-        /// <summary>
-        /// Gets a collection containing the Values in the <see cref="Dictionary&lt;TKey, TValue&gt;"/>.
-        /// </summary>
-        public new ValueCollection Values => base.Values;
-
         #region Event
 
         /// <summary>
@@ -55,18 +41,18 @@ namespace Honoo.Collections.ObjectModel
         /// Occurs when the collection changes.
         /// </summary>
         /// <param name="e"></param>
-        protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            CollectionChanged?.Invoke(this, e);
+            this.CollectionChanged?.Invoke(this, e);
         }
 
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
         /// <param name="propertyName"></param>
-        protected void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion Event
@@ -164,11 +150,12 @@ namespace Honoo.Collections.ObjectModel
             foreach (var item in this)
             {
                 index++;
-                if (item!.Key.Equals(key))
+                if (item.Key.Equals(key))
                 {
                     pair = item;
                     return true;
                 }
+                index++;
             }
             index = -1;
             pair = default;
