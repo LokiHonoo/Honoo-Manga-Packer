@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Honoo.MangaPacker.ViewModels"
     Title="Honoo Manga Packer"
-    MaxWidth="578"
     Left="{Binding Settings.WindowLeft, Mode=TwoWay}"
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight"
