@@ -318,7 +318,7 @@
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding Settings.ResetName, Mode=TwoWay}">
-                                <TextBlock Text="移除嵌套文件夹，并将最长的名称作为项目名称。" />
+                                <TextBlock Text="移除嵌套文件夹，并将最长的名称作为项目名称" />
                             </CheckBox>
                             <CheckBox
                                 Margin="0,10,0,0"
