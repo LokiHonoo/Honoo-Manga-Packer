@@ -30,7 +30,7 @@
                 <Border
                     Margin="5,5,0,5"
                     VerticalAlignment="Stretch"
-                    Background="#FFCECECE"
+                    Background="#FFECECEC"
                     CornerRadius="5">
                     <TextBlock Margin="5,2" Text="新标签" />
                 </Border>

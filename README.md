@@ -4,7 +4,7 @@
   - [INTRODUCTION](#introduction)
   - [SCREENSHOTS](#screenshots)
   - [CHANGELOG](#changelog)
-    - [1.5.2](#152)
+    - [1.5.3](#153)
   - [COMPONENTS](#components)
   - [LICENSE](#license)
 
@@ -22,7 +22,7 @@
 
 ## CHANGELOG
 
-### 1.5.2
+### 1.5.3
 
 **Refactored* 重构。
 

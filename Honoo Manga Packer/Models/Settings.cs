@@ -19,10 +19,10 @@ namespace Honoo.MangaPacker.Models
         private readonly ObservableCollection<string> _tags = ["[中国翻訳]"];
         private bool _addTag;
         private bool _addTopTitle;
+        private bool _clearWorkDirectly = false;
         private bool _deleteAD;
         private bool _executeAtDrop;
         private bool _moveToRecycleBin;
-        private bool _packClearWorkDirectly = false;
         private bool _packUnpacks;
         private bool _passwordRemoveConfirm = true;
         private ObservableDictionary<string, int> _passwords = [];
@@ -31,7 +31,6 @@ namespace Honoo.MangaPacker.Models
         private bool _settingExpanded = true;
         private bool _tagRemoveConfirm = true;
         private bool _topmost;
-        private bool _unpackClearWorkDirectly = false;
         private string _unpackEncoding = "UTF-8";
         private bool _unpacksMoveToPacks;
         private int _windowLeft = 300;
@@ -41,10 +40,10 @@ namespace Honoo.MangaPacker.Models
         public bool AddTag { get => _addTag; set => SetProperty(ref _addTag, value); }
         public bool AddTopTitle { get => _addTopTitle; set => SetProperty(ref _addTopTitle, value); }
         public ObservableDictionary<string, int> ADs => _ads;
+        public bool ClearWorkDirectly { get => _clearWorkDirectly; set => SetProperty(ref _clearWorkDirectly, value); }
         public bool DeleteAD { get => _deleteAD; set => SetProperty(ref _deleteAD, value); }
         public bool ExecuteAtDrop { get => _executeAtDrop; set => SetProperty(ref _executeAtDrop, value); }
         public bool MoveToRecycleBin { get => _moveToRecycleBin; set => SetProperty(ref _moveToRecycleBin, value); }
-        public bool PackClearWorkDirectly { get => _packClearWorkDirectly; set => SetProperty(ref _packClearWorkDirectly, value); }
         public bool PackUnpacks { get => _packUnpacks; set => SetProperty(ref _packUnpacks, value); }
         public bool PasswordRemoveConfirm { get => _passwordRemoveConfirm; set => SetProperty(ref _passwordRemoveConfirm, value); }
         public ObservableDictionary<string, int> Passwords { get => _passwords; set => SetProperty(ref _passwords, value); }
@@ -54,7 +53,6 @@ namespace Honoo.MangaPacker.Models
         public bool TagRemoveConfirm { get => _tagRemoveConfirm; set => SetProperty(ref _tagRemoveConfirm, value); }
         public ObservableCollection<string> Tags => _tags;
         public bool Topmost { get => _topmost; set => SetProperty(ref _topmost, value); }
-        public bool UnpackClearWorkDirectly { get => _unpackClearWorkDirectly; set => SetProperty(ref _unpackClearWorkDirectly, value); }
         public string UnpackEncoding { get => _unpackEncoding; set => SetProperty(ref _unpackEncoding, value); }
         public string[] UnpackEncodings { get; } = ["UTF-8", "GBK"];
         public bool UnpacksMoveToPacks { get => _unpacksMoveToPacks; set => SetProperty(ref _unpacksMoveToPacks, value); }
@@ -85,14 +83,13 @@ namespace Honoo.MangaPacker.Models
                 ModelLocator.Settings.SettingExpanded = manager.Default.Properties.GetValue("SettingExpanded", new XString(ModelLocator.Settings.SettingExpanded.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.WorkDirectly = manager.Default.Properties.GetValue("WorkDirectly", new XString(ModelLocator.Settings.WorkDirectly)).GetStringValue();
                 ModelLocator.Settings.ResetName = manager.Default.Properties.GetValue("ResetName", new XString(ModelLocator.Settings.ResetName.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-                ModelLocator.Settings.MoveToRecycleBin = manager.Default.Properties.GetValue("MoveToRecycleBin", new XString(ModelLocator.Settings.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.ExecuteAtDrop = manager.Default.Properties.GetValue("ExecuteAtDrop", new XString(ModelLocator.Settings.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+                ModelLocator.Settings.ClearWorkDirectly = manager.Default.Properties.GetValue("ClearWorkDirectly", new XString(ModelLocator.Settings.ClearWorkDirectly.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+                ModelLocator.Settings.MoveToRecycleBin = manager.Default.Properties.GetValue("MoveToRecycleBin", new XString(ModelLocator.Settings.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.PasswordRemoveConfirm = manager.Default.Properties.GetValue("PasswordRemoveConfirm", new XString(ModelLocator.Settings.PasswordRemoveConfirm.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.UnpackEncoding = manager.Default.Properties.GetValue("UnpackEncoding", new XString(ModelLocator.Settings.UnpackEncoding.ToString(CultureInfo.InvariantCulture))).GetStringValue();
-                ModelLocator.Settings.UnpackClearWorkDirectly = manager.Default.Properties.GetValue("UnpackClearWorkDirectly", new XString(ModelLocator.Settings.UnpackClearWorkDirectly.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.UnpacksMoveToPacks = manager.Default.Properties.GetValue("UnpacksMoveToPacks", new XString(ModelLocator.Settings.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.PackUnpacks = manager.Default.Properties.GetValue("PackUnpacks", new XString(ModelLocator.Settings.PackUnpacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-                ModelLocator.Settings.PackClearWorkDirectly = manager.Default.Properties.GetValue("PackClearWorkDirectly", new XString(ModelLocator.Settings.PackClearWorkDirectly.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.DeleteAD = manager.Default.Properties.GetValue("DeleteAD", new XString(ModelLocator.Settings.DeleteAD.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 ModelLocator.Settings.AddTopTitle = manager.Default.Properties.GetValue("AddTopTitle", new XString(ModelLocator.Settings.AddTopTitle.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
                 if (manager.Default.Properties.TryGetValue("Tags", out XList tags))
@@ -137,14 +134,13 @@ namespace Honoo.MangaPacker.Models
                 manager.Default.Properties.AddOrUpdate("SettingExpanded", new XString(ModelLocator.Settings.SettingExpanded.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("WorkDirectly", new XString(ModelLocator.Settings.WorkDirectly));
                 manager.Default.Properties.AddOrUpdate("ResetName", new XString(ModelLocator.Settings.ResetName.ToString(CultureInfo.InvariantCulture)));
-                manager.Default.Properties.AddOrUpdate("MoveToRecycleBin", new XString(ModelLocator.Settings.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("ExecuteAtDrop", new XString(ModelLocator.Settings.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture)));
+                manager.Default.Properties.AddOrUpdate("ClearWorkDirectly", new XString(ModelLocator.Settings.ClearWorkDirectly.ToString(CultureInfo.InvariantCulture)));
+                manager.Default.Properties.AddOrUpdate("MoveToRecycleBin", new XString(ModelLocator.Settings.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("PasswordRemoveConfirm", new XString(ModelLocator.Settings.PasswordRemoveConfirm.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("UnpackEncoding", new XString(ModelLocator.Settings.UnpackEncoding.ToString(CultureInfo.InvariantCulture)));
-                manager.Default.Properties.AddOrUpdate("UnpackClearWorkDirectly", new XString(ModelLocator.Settings.UnpackClearWorkDirectly.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("UnpacksMoveToPacks", new XString(ModelLocator.Settings.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("PackUnpacks", new XString(ModelLocator.Settings.PackUnpacks.ToString(CultureInfo.InvariantCulture)));
-                manager.Default.Properties.AddOrUpdate("PackClearWorkDirectly", new XString(ModelLocator.Settings.PackClearWorkDirectly.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("DeleteAD", new XString(ModelLocator.Settings.DeleteAD.ToString(CultureInfo.InvariantCulture)));
                 manager.Default.Properties.AddOrUpdate("AddTopTitle", new XString(ModelLocator.Settings.AddTopTitle.ToString(CultureInfo.InvariantCulture)));
                 XList tags = manager.Default.Properties.AddOrUpdate("Tags", new XList());

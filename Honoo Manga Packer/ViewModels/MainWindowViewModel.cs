@@ -127,7 +127,7 @@ namespace Honoo.MangaPacker.ViewModels
                     this.PackErrorMessages.Clear();
                     bool dirOk = true;
                     var dir = new DirectoryInfo(Path.Combine(Path.Combine(this.Settings.WorkDirectly, "Packs")));
-                    if (this.Settings.PackClearWorkDirectly)
+                    if (this.Settings.ClearWorkDirectly)
                     {
                         if (dir.Exists)
                         {
@@ -249,7 +249,7 @@ namespace Honoo.MangaPacker.ViewModels
                     this.UnpackErrorMessages.Clear();
                     bool dirOk = true;
                     var dir = new DirectoryInfo(Path.Combine(Path.Combine(this.Settings.WorkDirectly, "Unpacks")));
-                    if (this.Settings.UnpackClearWorkDirectly)
+                    if (this.Settings.ClearWorkDirectly)
                     {
                         if (dir.Exists)
                         {
