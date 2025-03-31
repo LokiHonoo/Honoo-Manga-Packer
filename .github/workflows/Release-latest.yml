@@ -14,8 +14,8 @@ on:
 
 env:
   name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || inputs.name }}
-  # tag_name: ${{ env.name }} # Create new tag
-  tag_name: latest # Replace 'latest' tag and overwriting it
+  # tag_name: ${{ env.name }}
+  tag_name: latest
 
 jobs:
   build:
