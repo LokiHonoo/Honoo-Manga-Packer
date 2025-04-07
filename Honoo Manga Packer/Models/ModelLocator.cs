@@ -5,8 +5,7 @@ namespace Honoo.MangaPacker.Models
 {
     internal static class ModelLocator
     {
-        internal static DialogLocale DialogLocaleCHS { get; } = new DialogLocale() { OKText = "确 定", CancelText = "取 消", YesText = "是", NoText = "否" };
-        internal static DialogOptions DialogOptionsAuto { get; } = new DialogOptions() { Locale = DialogLocaleCHS };
+        internal static DialogOptions DialogOptionsAuto { get; } = new DialogOptions() { Localization = new DialogLocalization("确 定", "取 消", "是", "否") };
         internal static Settings Settings { get; } = new Settings();
     }
 }
