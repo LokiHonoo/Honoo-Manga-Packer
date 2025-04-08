@@ -9,13 +9,13 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--  Includes this for Visual Studio Intellisense.  -->
-                <ResourceDictionary Source="pack://application:,,,/HonooUI.WPF;component/Themes/Design.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/HonooUI.WPF;component/Themes/LightDesign.xaml" />
 
                 <!--  Theme Settings.  -->
                 <hui:Theme
-                    AccentStyle="RoyalBlue"
+                    AccentColor="RoyalBlue"
                     FieldSize="Standard"
-                    StressStyle="Gold"
+                    StressColor="Gold"
                     ThemeStyle="Light" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
