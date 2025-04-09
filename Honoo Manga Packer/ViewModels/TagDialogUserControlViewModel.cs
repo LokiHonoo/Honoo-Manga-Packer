@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Honoo.MangaPacker.Models;
 using HonooUI.WPF;
 using System.Windows.Input;
 
@@ -8,7 +7,6 @@ namespace Honoo.MangaPacker.ViewModels
 {
     public sealed class TagDialogUserControlViewModel : ObservableObject
     {
-        private readonly Settings _settings = ModelLocator.Settings;
         private string _tag = string.Empty;
 
         public TagDialogUserControlViewModel()
@@ -20,14 +18,10 @@ namespace Honoo.MangaPacker.ViewModels
         }
 
         public ICommand AddTagCommand { get; set; }
-
         public ICommand MoveDownTagCommand { get; set; }
-
         public ICommand MoveUpTagCommand { get; set; }
-
         public ICommand RemoveTagCommand { get; set; }
-
-        public Settings Settings => _settings;
+        public Settings Settings => Settings.Instance;
 
         public string Tag
         {
@@ -87,7 +81,7 @@ namespace Honoo.MangaPacker.ViewModels
                 DialogButtons.YesNo,
                 DialogCloseButton.Ordinary,
                 DialogImage.Information,
-                ModelLocator.DialogOptionsAuto,
+                DialogOptions.Default,
                 null,
                 (e) =>
                 {

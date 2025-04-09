@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using Honoo.MangaPacker.ViewModels;
+using Microsoft.VisualBasic.FileIO;
 using PdfiumViewer;
 using SharpCompress.Archives;
 using SharpCompress.Common;

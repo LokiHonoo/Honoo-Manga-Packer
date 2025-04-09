@@ -1,4 +1,6 @@
-﻿using Honoo.MangaPacker.Models;
+﻿using Honoo.MangaPacker.ViewModels;
+using HonooUI.WPF;
+using System;
 using System.Text;
 using System.Windows;
 
@@ -24,10 +26,11 @@ namespace Honoo.MangaPacker
         {
             if (Honoo.Threading.App.PrevInstance("4Bvmw9BMhj2BQFHb"))
             {
-                Current.Shutdown();
+                Environment.Exit(0);
             }
             else
             {
+                DialogOptions.Default.Localization = new DialogLocalization("确 定", "取 消", "是", "否");
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 try
                 {

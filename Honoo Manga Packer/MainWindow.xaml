@@ -460,7 +460,7 @@
                                     Margin="10,0,0,0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
-                                    ToolTip="将打包的文件放置在一个新文件夹中，名称和文件名相同">
+                                    ToolTip="打包文件中创建一个新文件夹中，名称和文件名相同，打包的内容就在此文件夹中">
                                     <Path
                                         Data="{StaticResource QuestionGeometry}"
                                         Fill="{DynamicResource AccentBrush}"

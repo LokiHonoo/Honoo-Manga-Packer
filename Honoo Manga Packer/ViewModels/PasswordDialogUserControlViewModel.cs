@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Honoo.Collections.ObjectModel;
-using Honoo.MangaPacker.Models;
 using HonooUI.WPF;
 using System.Windows.Input;
 
@@ -9,7 +8,6 @@ namespace Honoo.MangaPacker.ViewModels
 {
     public sealed class PasswordDialogUserControlViewModel : ObservableObject
     {
-        private readonly Settings _settings = ModelLocator.Settings;
         private string _password = string.Empty;
 
         public PasswordDialogUserControlViewModel()
@@ -30,7 +28,7 @@ namespace Honoo.MangaPacker.ViewModels
         }
 
         public ICommand RemovePasswordCommand { get; set; }
-        public Settings Settings => _settings;
+        public Settings Settings => Settings.Instance;
 
         private void AddPassword()
         {
@@ -56,7 +54,7 @@ namespace Honoo.MangaPacker.ViewModels
                     DialogButtons.YesNo,
                     DialogCloseButton.Ordinary,
                     DialogImage.Information,
-                    ModelLocator.DialogOptionsAuto,
+                    DialogOptions.Default,
                     null,
                     (e) =>
                     {

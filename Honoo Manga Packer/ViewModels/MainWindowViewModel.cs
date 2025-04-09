@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Honoo.MangaPacker.Models;
-using Honoo.MangaPacker.UserControls;
+using Honoo.MangaPacker.Views;
 using HonooUI.WPF;
 using Microsoft.Win32;
 using System;
@@ -43,7 +43,7 @@ namespace Honoo.MangaPacker.ViewModels
         public ICommand PackDropCommand { get; set; }
         public ObservableCollection<string> PackErrorMessages { get; } = [];
         public Workbench PackWorkbench { get => _packWorkbench; set => SetProperty(ref _packWorkbench, value); }
-        public Settings Settings => ModelLocator.Settings;
+        public Settings Settings => Settings.Instance;
         public ICommand UnpackClearCommand { get; set; }
         public ICommand UnpackCommand { get; set; }
         public ICommand UnpackDropCommand { get; set; }
@@ -177,7 +177,7 @@ namespace Honoo.MangaPacker.ViewModels
                             {
                                 if (!this.PackWorkbench.Abort)
                                 {
-                                    if (!Pack.Do(this.PackWorkbench.Projects[i], this.Settings, out Tuple<bool, string, Exception?> log))
+                                    if (!Pack.Do(this.PackWorkbench.Projects[i], Settings, out Tuple<bool, string, Exception?> log))
                                     {
                                         Application.Current.Dispatcher.Invoke(new Action(() =>
                                         {
@@ -300,7 +300,7 @@ namespace Honoo.MangaPacker.ViewModels
                             {
                                 if (!this.UnpackWorkbench.Abort)
                                 {
-                                    if (!Models.Unpack.Do(this.UnpackWorkbench.Projects[i], this.Settings, out Tuple<bool, string, Exception?> log))
+                                    if (!Models.Unpack.Do(this.UnpackWorkbench.Projects[i], Settings, out Tuple<bool, string, Exception?> log))
                                     {
                                         Application.Current.Dispatcher.Invoke(new Action(() =>
                                         {

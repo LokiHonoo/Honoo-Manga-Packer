@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Honoo.MangaPacker.UserControls
+namespace Honoo.MangaPacker.Views
 {
     /// <summary>
     /// TagDialogUserControl.xaml 的交互逻辑
