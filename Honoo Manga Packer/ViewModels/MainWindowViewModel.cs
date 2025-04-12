@@ -96,9 +96,9 @@ namespace Honoo.MangaPacker.ViewModels
                            DialogButtons.None,
                            DialogCloseButton.Ordinary,
                            DialogImage.None,
+                           DialogSize.Default,
                            false,
                            DialogLocalization.Default,
-                           DialogSize.Default,
                            null,
                            (e) =>
                            {
@@ -141,9 +141,9 @@ namespace Honoo.MangaPacker.ViewModels
                                        DialogButtons.None,
                                        DialogCloseButton.Ordinary,
                                        DialogImage.None,
+                                       DialogSize.Default,
                                        false,
                                        DialogLocalization.Default,
-                                       DialogSize.Default,
                                        null,
                                        (e) =>
                                        {
