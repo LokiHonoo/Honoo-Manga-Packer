@@ -4,19 +4,21 @@ using System.Collections.ObjectModel;
 
 namespace Honoo.MangaPacker.ViewModels
 {
-    public sealed class Workbench : ObservableObject
+    public sealed partial class Workbench : ObservableObject
     {
-        private readonly ObservableCollection<Tuple<bool, string, Exception?>> _Log = [];
-        private readonly ObservableCollection<string> _projects = [];
+        [ObservableProperty]
         private bool _abort;
+
+        [ObservableProperty]
         private bool _hasError;
+
+        [ObservableProperty]
         private bool _isRunning;
+
+        [ObservableProperty]
         private double _progress;
-        public bool Abort { get => _abort; set => SetProperty(ref _abort, value); }
-        public bool HasError { get => _hasError; set => SetProperty(ref _hasError, value); }
-        public bool IsRunning { get => _isRunning; set => SetProperty(ref _isRunning, value); }
-        public ObservableCollection<Tuple<bool, string, Exception?>> Log => _Log;
-        public double Progress { get => _progress; set => SetProperty(ref _progress, value); }
-        public ObservableCollection<string> Projects => _projects;
+
+        public ObservableCollection<Tuple<bool, string, Exception?>> Log { get; } = [];
+        public ObservableCollection<string> Projects { get; } = [];
     }
 }

@@ -1,12 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Honoo.MangaPacker.Models;
-using Honoo.MangaPacker.Views;
 using HonooUI.WPF;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,10 +16,37 @@ using System.Windows.Input;
 namespace Honoo.MangaPacker.ViewModels
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "CA1515:考虑将公共类型设为内部类型", Justification = "<挂起>")]
-    public sealed class MainWindowViewModel : ObservableObject
+    public sealed partial class MainWindowViewModel : ObservableObject
     {
+        #region Members
+
+        [ObservableProperty]
         private Workbench _packWorkbench = new();
+
+        [ObservableProperty]
+        private Settings _settings = Settings.Instance;
+
+        [ObservableProperty]
         private Workbench _unpackWorkbench = new();
+
+        [ObservableProperty]
+        private string? _version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+
+        public ICommand BrowserWorkDirectlyCommand { get; set; }
+        public ICommand EditPasswordsCommand { get; set; }
+        public ICommand EditTagsCommand { get; set; }
+        public ICommand PackClearCommand { get; set; }
+        public ICommand PackCommand { get; set; }
+        public ICommand PackDropCommand { get; set; }
+        public ObservableCollection<string> PackErrorMessages { get; } = [];
+        public ICommand UnpackClearCommand { get; set; }
+        public ICommand UnpackCommand { get; set; }
+        public ICommand UnpackDropCommand { get; set; }
+        public ObservableCollection<string> UnpackErrorMessages { get; } = [];
+        public ICommand ViewPackErrorCommand { get; set; }
+        public ICommand ViewUnpackErrorCommand { get; set; }
+
+        #endregion Members
 
         public MainWindowViewModel()
         {
@@ -35,23 +63,6 @@ namespace Honoo.MangaPacker.ViewModels
             this.ViewPackErrorCommand = new RelayCommand(ViewPackError);
         }
 
-        public ICommand BrowserWorkDirectlyCommand { get; set; }
-        public ICommand EditPasswordsCommand { get; set; }
-        public ICommand EditTagsCommand { get; set; }
-        public ICommand PackClearCommand { get; set; }
-        public ICommand PackCommand { get; set; }
-        public ICommand PackDropCommand { get; set; }
-        public ObservableCollection<string> PackErrorMessages { get; } = [];
-        public Workbench PackWorkbench { get => _packWorkbench; set => SetProperty(ref _packWorkbench, value); }
-        public Settings Settings => Settings.Instance;
-        public ICommand UnpackClearCommand { get; set; }
-        public ICommand UnpackCommand { get; set; }
-        public ICommand UnpackDropCommand { get; set; }
-        public ObservableCollection<string> UnpackErrorMessages { get; } = [];
-        public Workbench UnpackWorkbench { get => _unpackWorkbench; set => SetProperty(ref _unpackWorkbench, value); }
-        public ICommand ViewPackErrorCommand { get; set; }
-        public ICommand ViewUnpackErrorCommand { get; set; }
-
         private void BrowserWorkDirectly()
         {
             OpenFolderDialog dialog = new()
@@ -67,12 +78,88 @@ namespace Honoo.MangaPacker.ViewModels
 
         private void EditPasswords()
         {
-            DialogManager.Default.Show(new PasswordDialogUserControl(), "解包密码");
+            var stackPanel = new StackPanel();
+            var textBlock = new TextBlock() { Text = "每行一个密码：" };
+            var textBox = new TextBox
+            {
+                Width = 280,
+                Height = 320,
+                Margin = new Thickness(0, 10, 0, 0),
+                TextWrapping = TextWrapping.Wrap,
+                AcceptsReturn = true,
+                Text = string.Join(Environment.NewLine, this.Settings.Passwords.Keys)
+            };
+            stackPanel.Children.Add(textBlock);
+            stackPanel.Children.Add(textBox);
+            DialogManager.Default.Show(stackPanel,
+                           "解包密码",
+                           DialogButtons.None,
+                           DialogCloseButton.Ordinary,
+                           DialogImage.None,
+                           false,
+                           DialogLocalization.Default,
+                           DialogSize.Default,
+                           null,
+                           (e) =>
+                           {
+                               var dict = new Dictionary<string, int>();
+                               string[] passwords = textBox.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                               for (int i = 0; i < passwords.Length; i++)
+                               {
+                                   string password = passwords[i];
+                                   if (!string.IsNullOrEmpty(password) && !dict.ContainsKey(password))
+                                   {
+                                       dict.Add(password, this.Settings.Passwords.TryGetValue(password, out int weight) ? weight : 0);
+                                   }
+                               }
+                               this.Settings.Passwords.Clear();
+                               foreach (var item in dict)
+                               {
+                                   this.Settings.Passwords.Add(item.Key, item.Value);
+                               }
+                           },
+                           null);
         }
 
         private void EditTags()
         {
-            DialogManager.Default.Show(new TagDialogUserControl(), "标签");
+            var stackPanel = new StackPanel();
+            var textBlock = new TextBlock() { Text = "每行一个标签：" };
+            var textBox = new TextBox
+            {
+                Width = 280,
+                Height = 320,
+                Margin = new Thickness(0, 10, 0, 0),
+                TextWrapping = TextWrapping.Wrap,
+                AcceptsReturn = true,
+                Text = string.Join(Environment.NewLine, this.Settings.Tags)
+            };
+            stackPanel.Children.Add(textBlock);
+            stackPanel.Children.Add(textBox);
+            DialogManager.Default.Show(stackPanel,
+                                       "标签",
+                                       DialogButtons.None,
+                                       DialogCloseButton.Ordinary,
+                                       DialogImage.None,
+                                       false,
+                                       DialogLocalization.Default,
+                                       DialogSize.Default,
+                                       null,
+                                       (e) =>
+                                       {
+                                           string selectTag = this.Settings.SelectedTag;
+                                           this.Settings.Tags.Clear();
+                                           string[] tags = textBox.Text.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                           foreach (var tag in tags)
+                                           {
+                                               this.Settings.Tags.Add(tag);
+                                               if (tag == selectTag)
+                                               {
+                                                   this.Settings.SelectedTag = tag;
+                                               }
+                                           }
+                                       },
+                                       null);
         }
 
         private void PackClear()

@@ -20,7 +20,7 @@
 	<ApplicationIcon>Resources\yoriko18.ico</ApplicationIcon>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
-	<VersionPrefix>1.5.6</VersionPrefix>
+	<VersionPrefix>1.5.7</VersionPrefix>
     <BaseOutputPath>..\bin\</BaseOutputPath>
     <Description>漫画和图包的打包辅助工具。支持 ZIP/RAR/7Z/PDF 解压缩或重新打包到无压缩 ZIP 文件。支持试用密码和移除广告页。</Description>
     <AssemblyName>MangaPacker</AssemblyName>
@@ -28,8 +28,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Honoo.Configuration.ConfigurationManager" Version="1.5.12" />
-		<PackageReference Include="HonooUI.WPF" Version="1.0.0-alpha.68" />
+		<PackageReference Include="Honoo.Configuration.ConfigurationManager" Version="1.5.14" />
+		<PackageReference Include="HonooUI.WPF" Version="1.0.0-alpha.76" />
 		<PackageReference Include="ImageResizer.Plugins.PdfiumRenderer.Pdfium.Dll" Version="1.0.1" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
 		<PackageReference Include="PdfiumViewer.Updated" Version="2.14.5" />

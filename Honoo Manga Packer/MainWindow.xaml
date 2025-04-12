@@ -37,6 +37,13 @@
                 Foreground="{DynamicResource AccentBrush}"
                 Text="Honoo Manga Packer"
                 WindowChrome.IsHitTestVisibleInChrome="False" />
+            <TextBlock
+                Margin="14,0,0,0"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource ThirdlyForegroundBrush}"
+                Text="{Binding Version}"
+                WindowChrome.IsHitTestVisibleInChrome="False" />
             <ToggleButton
                 Margin="0,0,1,0"
                 hui:ToggleButtonAttaches.CheckedBackground="{DynamicResource Alpha20Brush}"
@@ -328,12 +335,12 @@
                             <CheckBox
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Left"
-                                Content="解包前清理工作文件夹/Unpacks/，打包前清理工作文件夹/Packs/"
+                                Content="任务开始前分别清理工作文件夹（/Unpacks/ 和 /Packs/）"
                                 IsChecked="{Binding Settings.ClearWorkDirectly, Mode=TwoWay}" />
                             <CheckBox
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Left"
-                                Content="任务结束后，源文件/文件夹移入回收站"
+                                Content="任务结束后将源文件/文件夹移入回收站"
                                 IsChecked="{Binding Settings.MoveToRecycleBin, Mode=TwoWay}" />
                         </StackPanel>
                     </GroupBox>

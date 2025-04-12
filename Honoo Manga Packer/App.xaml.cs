@@ -18,8 +18,8 @@ namespace Honoo.MangaPacker
 
         private void App_Exit(object sender, ExitEventArgs e)
         {
-            Settings.SavePassword();
-            Settings.SaveConfig();
+            Settings.Instance.SavePassword();
+            Settings.Instance.SaveConfig();
         }
 
         private void App_Startup(object sender, StartupEventArgs e)
@@ -30,12 +30,12 @@ namespace Honoo.MangaPacker
             }
             else
             {
-                DialogOptions.Default.Localization = new DialogLocalization("确 定", "取 消", "是", "否");
+                DialogLocalization.Default = new DialogLocalization("确 定", "取 消", "是", "否");
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 try
                 {
-                    Settings.LoadPassword();
-                    Settings.LoadConfig();
+                    Settings.Instance.LoadPassword();
+                    Settings.Instance.LoadConfig();
                 }
                 catch
                 {
