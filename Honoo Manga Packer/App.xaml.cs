@@ -30,7 +30,7 @@ namespace Honoo.MangaPacker
             }
             else
             {
-                DialogLocalization.Default = new DialogLocalization("确 定", "取 消", "是", "否");
+                DialogLocalization.Default = new DialogLocalization("确 定", "取 消");
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 try
                 {
@@ -40,6 +40,7 @@ namespace Honoo.MangaPacker
                 catch
                 {
                 }
+
                 this.Exit += App_Exit;
             }
         }

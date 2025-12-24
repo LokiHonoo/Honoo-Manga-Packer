@@ -1,9 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Honoo.Collections.ObjectModel;
 using Honoo.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 
@@ -18,43 +16,27 @@ namespace Honoo.MangaPacker.ViewModels
         #endregion Instance
 
         private static readonly string _adFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ad.xml");
-        private static readonly string _configFlie = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mp.xml");
+        private static readonly string _configFlie = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.xml");
         private static readonly string _passwordFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pwd.xml");
 
-        [ObservableProperty] private bool _addTag;
-        [ObservableProperty] private bool _addTopTitle;
-        [ObservableProperty] private bool _clearWorkDirectly = false;
-        [ObservableProperty] private bool _deleteAD;
-        [ObservableProperty] private bool _executeAtDrop;
-        [ObservableProperty] private bool _moveToRecycleBin;
-        [ObservableProperty] private bool _packUnpacks;
-        [ObservableProperty] private bool _passwordRemoveConfirm = true;
-        [ObservableProperty] private bool _resetName = true;
-        [ObservableProperty] private string _selectedTag = string.Empty;
+        [ObservableProperty] private long[] _ads = [];
+        [ObservableProperty] private bool _packAddNest;
+        [ObservableProperty] private bool _packClearTarget;
+        [ObservableProperty] private bool _packDelSource;
+        [ObservableProperty] private bool _packRemoveAD;
+        [ObservableProperty] private bool _packRemoveNest;
         [ObservableProperty] private bool _settingExpanded = true;
-        [ObservableProperty] private bool _tagRemoveConfirm = true;
         [ObservableProperty] private bool _topmost;
+        [ObservableProperty] private bool _unpackClearTarget;
+        [ObservableProperty] private bool _unpackDelSource;
         [ObservableProperty] private string _unpackEncoding = "UTF-8";
-        [ObservableProperty] private bool _unpacksMoveToPacks;
+        [ObservableProperty] private bool _unpackSendToPack;
+        [ObservableProperty] private bool _unpackTryPassword;
         [ObservableProperty] private int _windowLeft = 300;
         [ObservableProperty] private int _windowTop = 300;
-        [ObservableProperty] private string _workDirectly = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MangaPacker");
-        public ObservableDictionary<string, int> ADs { get; } = [];
-        public ObservableDictionary<string, int> Passwords { get; } = [];
-        public ObservableCollection<string> Tags { get; } = ["[中国翻訳]"];
-
+        [ObservableProperty] private string _workDirectly = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "HmpWorking");
         public string[] UnpackEncodings { get; } = ["UTF-8", "Unicode", "GBK", "Big5", "Shift-JIS"];
-
-        internal void LoadAD()
-        {
-            using XConfigManager manager = File.Exists(_adFile) ? new(_adFile) : new();
-            this.ADs.Clear();
-
-            foreach (var property in manager.Default.Properties)
-            {
-                this.ADs.Add(property.Key, ((XString)property.Value).GetInt32Value());
-            }
-        }
+        public HashSet<string> UnpackPasswords { get; set; } = [];
 
         internal void LoadConfig()
         {
@@ -63,43 +45,31 @@ namespace Honoo.MangaPacker.ViewModels
             this.WindowLeft = manager.Default.Properties.GetValue("WindowLeft", new XString(this.WindowLeft.ToString(CultureInfo.InvariantCulture))).GetInt32Value();
             this.Topmost = manager.Default.Properties.GetValue("Topmost", new XString(this.Topmost.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
             this.SettingExpanded = manager.Default.Properties.GetValue("SettingExpanded", new XString(this.SettingExpanded.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+
             this.WorkDirectly = manager.Default.Properties.GetValue("WorkDirectly", new XString(this.WorkDirectly)).GetStringValue();
-            this.ResetName = manager.Default.Properties.GetValue("ResetName", new XString(this.ResetName.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.ExecuteAtDrop = manager.Default.Properties.GetValue("ExecuteAtDrop", new XString(this.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.ClearWorkDirectly = manager.Default.Properties.GetValue("ClearWorkDirectly", new XString(this.ClearWorkDirectly.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.MoveToRecycleBin = manager.Default.Properties.GetValue("MoveToRecycleBin", new XString(this.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.PasswordRemoveConfirm = manager.Default.Properties.GetValue("PasswordRemoveConfirm", new XString(this.PasswordRemoveConfirm.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+
             this.UnpackEncoding = manager.Default.Properties.GetValue("UnpackEncoding", new XString(this.UnpackEncoding.ToString(CultureInfo.InvariantCulture))).GetStringValue();
-            this.UnpacksMoveToPacks = manager.Default.Properties.GetValue("UnpacksMoveToPacks", new XString(this.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.PackUnpacks = manager.Default.Properties.GetValue("PackUnpacks", new XString(this.PackUnpacks.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.DeleteAD = manager.Default.Properties.GetValue("DeleteAD", new XString(this.DeleteAD.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.AddTopTitle = manager.Default.Properties.GetValue("AddTopTitle", new XString(this.AddTopTitle.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            if (manager.Default.Properties.TryGetValue("Tags", out XList tags))
-            {
-                this.Tags.Clear();
-                foreach (var tag in tags.Properties)
-                {
-                    this.Tags.Add(((XString)tag).GetStringValue());
-                }
-            }
-            this.AddTag = manager.Default.Properties.GetValue("AddTag", new XString(this.AddTag.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
-            this.SelectedTag = manager.Default.Properties.GetValue("SelectedTag", new XString(string.Empty)).GetStringValue();
-            this.TagRemoveConfirm = manager.Default.Properties.GetValue("TagRemoveConfirm", new XString(this.TagRemoveConfirm.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.UnpackClearTarget = manager.Default.Properties.GetValue("UnpackClearTarget", new XString(this.UnpackClearTarget.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.UnpackTryPassword = manager.Default.Properties.GetValue("UnpackTryPassword", new XString(this.UnpackTryPassword.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.UnpackSendToPack = manager.Default.Properties.GetValue("UnpackSendToPack", new XString(this.UnpackSendToPack.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.UnpackDelSource = manager.Default.Properties.GetValue("UnpackDelSource", new XString(this.UnpackDelSource.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+
+            this.PackClearTarget = manager.Default.Properties.GetValue("PackClearTarget", new XString(this.PackClearTarget.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.PackRemoveAD = manager.Default.Properties.GetValue("PackRemoveAD", new XString(this.PackRemoveAD.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.PackRemoveNest = manager.Default.Properties.GetValue("PackRemoveNest", new XString(this.PackRemoveNest.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.PackAddNest = manager.Default.Properties.GetValue("PackAddNest", new XString(this.PackAddNest.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.PackDelSource = manager.Default.Properties.GetValue("PackDelSource", new XString(this.PackDelSource.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
         }
 
         internal void LoadPassword()
         {
-            using XConfigManager manager = File.Exists(_passwordFile) ? new(_passwordFile) : new();
-            var ps = new List<KeyValuePair<string, int>>();
-            this.Passwords.Clear();
-            foreach (var password in manager.Default.Properties)
+            if (File.Exists(_passwordFile))
             {
-                ps.Add(new KeyValuePair<string, int>(password.Key, ((XString)password.Value).GetInt32Value()));
-            }
-            ps.Sort((a, b) => a.Value.CompareTo(b.Value));
-            foreach (var password in ps)
-            {
-                this.Passwords.Add(password.Key, password.Value);
+                using XConfigManager manager = new(_passwordFile);
+                foreach (var prop in manager.Default.Properties.GetValue<XList>("Passwords").Properties)
+                {
+                    this.UnpackPasswords.Add(((XString)prop).GetStringValue());
+                }
             }
         }
 
@@ -110,34 +80,31 @@ namespace Honoo.MangaPacker.ViewModels
             manager.Default.Properties.AddOrUpdate("WindowLeft", new XString(this.WindowLeft.ToString(CultureInfo.InvariantCulture)));
             manager.Default.Properties.AddOrUpdate("Topmost", new XString(this.Topmost.ToString(CultureInfo.InvariantCulture)));
             manager.Default.Properties.AddOrUpdate("SettingExpanded", new XString(this.SettingExpanded.ToString(CultureInfo.InvariantCulture)));
+
             manager.Default.Properties.AddOrUpdate("WorkDirectly", new XString(this.WorkDirectly));
-            manager.Default.Properties.AddOrUpdate("ResetName", new XString(this.ResetName.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("ExecuteAtDrop", new XString(this.ExecuteAtDrop.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("ClearWorkDirectly", new XString(this.ClearWorkDirectly.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("MoveToRecycleBin", new XString(this.MoveToRecycleBin.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("PasswordRemoveConfirm", new XString(this.PasswordRemoveConfirm.ToString(CultureInfo.InvariantCulture)));
+
             manager.Default.Properties.AddOrUpdate("UnpackEncoding", new XString(this.UnpackEncoding.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("UnpacksMoveToPacks", new XString(this.UnpacksMoveToPacks.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("PackUnpacks", new XString(this.PackUnpacks.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("DeleteAD", new XString(this.DeleteAD.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("AddTopTitle", new XString(this.AddTopTitle.ToString(CultureInfo.InvariantCulture)));
-            XList tags = manager.Default.Properties.AddOrUpdate("Tags", new XList());
-            foreach (var tag in this.Tags)
-            {
-                tags.Properties.Add(new XString(tag));
-            }
-            manager.Default.Properties.AddOrUpdate("AddTag", new XString(this.AddTag.ToString(CultureInfo.InvariantCulture)));
-            manager.Default.Properties.AddOrUpdate("SelectedTag", new XString(this.SelectedTag));
-            manager.Default.Properties.AddOrUpdate("TagRemoveConfirm", new XString(this.TagRemoveConfirm.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("UnpackClearTarget", new XString(this.UnpackClearTarget.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("UnpackTryPassword", new XString(this.UnpackTryPassword.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("UnpackSendToPack", new XString(this.UnpackSendToPack.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("UnpackDelSource", new XString(this.UnpackDelSource.ToString(CultureInfo.InvariantCulture)));
+
+            manager.Default.Properties.AddOrUpdate("PackClearTarget", new XString(this.PackClearTarget.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("PackRemoveAD", new XString(this.PackRemoveAD.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("PackRemoveNest", new XString(this.PackRemoveNest.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("PackAddNest", new XString(this.PackAddNest.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("PackDelSource", new XString(this.PackDelSource.ToString(CultureInfo.InvariantCulture)));
+
             manager.Save(_configFlie);
         }
 
         internal void SavePassword()
         {
             using XConfigManager manager = new();
-            foreach (var password in this.Passwords)
+            XList list = manager.Default.Properties.Add("Passwords", new XList());
+            foreach (var password in this.UnpackPasswords)
             {
-                manager.Default.Properties.AddOrUpdate(password.Key, new XString(password.Value.ToString(CultureInfo.InvariantCulture)));
+                list.Properties.AddString(password);
             }
             manager.Save(_passwordFile);
         }

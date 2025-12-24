@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Honoo Manga Packer", "Honoo Manga Packer\Honoo Manga Packer.csproj", "{066AF748-835D-4454-9E22-2EC765A540F3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{22701320-B458-4881-8B99-95326D66D8B7}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honoo Manga Packer", "Honoo Manga Packer\Honoo Manga Packer.csproj", "{38CD1537-9A05-4CA1-B731-CB5C3A643486}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +16,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{066AF748-835D-4454-9E22-2EC765A540F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{066AF748-835D-4454-9E22-2EC765A540F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{066AF748-835D-4454-9E22-2EC765A540F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{066AF748-835D-4454-9E22-2EC765A540F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38CD1537-9A05-4CA1-B731-CB5C3A643486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38CD1537-9A05-4CA1-B731-CB5C3A643486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38CD1537-9A05-4CA1-B731-CB5C3A643486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38CD1537-9A05-4CA1-B731-CB5C3A643486}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
