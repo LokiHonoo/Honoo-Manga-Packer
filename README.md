@@ -4,18 +4,17 @@
   - [INTRODUCTION](#introduction)
   - [SCREENSHOTS](#screenshots)
   - [CHANGELOG](#changelog)
-    - [1.5.7](#157)
-    - [1.5.3](#153)
+    - [1.6.0](#160)
   - [COMPONENTS](#components)
   - [LICENSE](#license)
 
 ## INTRODUCTION
 
-漫画和图包的打包辅助工具。支持 ZIP/RAR/7Z/PDF 解压缩或重新打包到无压缩 ZIP 文件。
+漫画和图包的打包辅助工具。支持 ZIP/RAR/7Z/PDF 解压缩和重新打包到无压缩 ZIP 文件，同时自动删除 Windows 缩略图文件，MacOX 缓存文件等。
 
-支持尝试使用密码解包加密的文件。解压缩功能由 [SharpCompress](https://github.com/adamhathcock/sharpcompress) 实现，RAR5 解压不完全可用。
+支持试用密码和移除广告页。
 
-移除广告页功能暂时不可用。
+解压缩功能由 [SharpCompress](https://github.com/adamhathcock/sharpcompress) 实现。
 
 ## SCREENSHOTS
 
@@ -23,13 +22,9 @@
 
 ## CHANGELOG
 
-### 1.5.7
+### 1.6.0
 
-**Refactored* 优化。
-
-### 1.5.3
-
-**Refactored* 重构。
+**Refactored* 减少了部分逻辑复杂的功能。
 
 ## COMPONENTS
 
