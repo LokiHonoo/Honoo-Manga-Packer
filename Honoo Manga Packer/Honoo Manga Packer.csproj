@@ -20,7 +20,7 @@
 		<ApplicationIcon>Resources\yoriko18.ico</ApplicationIcon>
 		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 		<AnalysisLevel>latest</AnalysisLevel>
-		<VersionPrefix>1.6.0</VersionPrefix>
+		<VersionPrefix>1.6.1</VersionPrefix>
 		<BaseOutputPath>bin\</BaseOutputPath>
 		<Description>漫画和图包的打包辅助工具。支持 ZIP/RAR/7Z/PDF 解压缩和重新打包到无压缩 ZIP 文件，同时自动删除 Windows 缩略图文件，MacOX 缓存文件等。支持试用密码和移除广告页。</Description>
 		<AssemblyName>MangaPacker</AssemblyName>

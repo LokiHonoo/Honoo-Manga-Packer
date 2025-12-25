@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using Honoo.MangaPacker.ViewModels;
+using Microsoft.VisualBasic.FileIO;
 using PdfiumViewer;
 using SharpCompress.Archives;
 using SharpCompress.Common;
@@ -19,6 +20,7 @@ namespace Honoo.MangaPacker.Models
             Overwrite = true,
             ExtractFullPath = true
         };
+
         internal static UnpackResult Do(string path, UnpackSettings settings)
         {
             if (File.Exists(path))
@@ -61,6 +63,10 @@ namespace Honoo.MangaPacker.Models
                 IList<SizeF> pageSizes = pdf.PageSizes;
                 for (int i = 0; i < pdf.PageCount; i++)
                 {
+                    if (UnpackWorkbench.Instance.Abort)
+                    {
+                        return new UnpackResult(false, "用户终止。", string.Empty);
+                    }
                     string fileName = i.ToString(CultureInfo.InvariantCulture).PadLeft(6, '0') + ".jpg";
                     SizeF pageSize = pageSizes[i];
                     Image image = pdf.Render(i, (int)pageSize.Width, (int)pageSize.Height, 150, 150, PdfRenderFlags.Annotations);

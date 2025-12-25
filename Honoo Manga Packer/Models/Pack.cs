@@ -1,4 +1,5 @@
 ﻿using Honoo.IO.Hashing;
+using Honoo.MangaPacker.ViewModels;
 using Microsoft.VisualBasic.FileIO;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
@@ -90,6 +91,10 @@ namespace Honoo.MangaPacker.Models
             {
                 return new PackResult(false, "文件夹中没有有效的文件。“" + path + "”");
             }
+            if (PackWorkbench.Instance.Abort)
+            {
+                return new PackResult(false, "用户终止。");
+            }
             string zip = Path.Combine(settings.PackDir, $"{title}.zip");
             int n = 1;
             while (File.Exists(zip))
@@ -102,6 +107,10 @@ namespace Honoo.MangaPacker.Models
                 using var archive = ZipArchive.Create();
                 foreach (var file in files)
                 {
+                    if (PackWorkbench.Instance.Abort)
+                    {
+                        return new PackResult(false, "用户终止。");
+                    }
                     string key = file.FullName[remove..];
                     if (settings.PackAddNest)
                     {
