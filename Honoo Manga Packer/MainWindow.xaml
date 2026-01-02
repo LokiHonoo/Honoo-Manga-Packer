@@ -280,36 +280,49 @@
                         <ColumnDefinition Width="0.5*" />
                         <ColumnDefinition Width="0.5*" />
                     </Grid.ColumnDefinitions>
-                    <GroupBox Grid.ColumnSpan="2">
+                    <!--<GroupBox Grid.ColumnSpan="2">
                         <GroupBox.Header>
                             <TextBlock Margin="10,6,0,6" Text="通用设置" />
                         </GroupBox.Header>
                         <StackPanel Margin="10">
-                            <hui:TextBoxEx IsReadOnly="True" Text="{Binding Settings.WorkDirectly, Mode=TwoWay}">
-                                <hui:TextBoxEx.Header>
-                                    <Border
-                                        Margin="5,5,0,5"
-                                        VerticalAlignment="Stretch"
-                                        Background="#FFDEDEDE"
-                                        CornerRadius="5">
-                                        <TextBlock
-                                            Margin="5,3"
-                                            VerticalAlignment="Center"
-                                            Text="工作文件夹" />
-                                    </Border>
-                                </hui:TextBoxEx.Header>
-                                <hui:TextBoxEx.Footer>
-                                    <Button
-                                        Margin="5"
-                                        Padding="3"
-                                        Command="{Binding BrowserWorkDirectlyCommand}"
-                                        Style="{StaticResource ButtonTransparentStyle}">
-                                        <Path Data="{StaticResource FolderOpenGeometry}" Style="{StaticResource PathIcon16Style}" />
-                                    </Button>
-                                </hui:TextBoxEx.Footer>
-                            </hui:TextBoxEx>
                         </StackPanel>
-                    </GroupBox>
+                    </GroupBox>-->
+                    <hui:TextBoxEx
+                        Grid.ColumnSpan="2"
+                        IsReadOnly="True"
+                        Text="{Binding Settings.WorkDirectly, Mode=TwoWay}">
+                        <hui:TextBoxEx.Header>
+                            <Border
+                                Margin="5,5,0,5"
+                                VerticalAlignment="Stretch"
+                                Background="#FFDEDEDE"
+                                CornerRadius="5">
+                                <TextBlock
+                                    Margin="5,3"
+                                    VerticalAlignment="Center"
+                                    Text="工作文件夹" />
+                            </Border>
+                        </hui:TextBoxEx.Header>
+                        <hui:TextBoxEx.Footer>
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Margin="5"
+                                    Padding="3"
+                                    Command="{Binding BrowserWorkDirectlyCommand}"
+                                    Style="{StaticResource ButtonTransparentStyle}">
+                                    <Path Data="{StaticResource FolderOpenGeometry}" Style="{StaticResource PathIcon16Style}" />
+                                </Button>
+                                <Button
+                                    Margin="5"
+                                    Padding="3"
+                                    Command="{Binding OpenWorkDirectlyCommand}"
+                                    Style="{StaticResource ButtonTransparentStyle}">
+                                    <Path Data="{StaticResource ArrowRightSquareGeometry}" Style="{StaticResource PathIcon16Style}" />
+                                </Button>
+                            </StackPanel>
+                        </hui:TextBoxEx.Footer>
+                    </hui:TextBoxEx>
+
                     <GroupBox
                         Grid.Row="1"
                         Grid.Column="0"
@@ -378,10 +391,7 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <CheckBox
-                                    Content="移除广告页"
-                                    IsChecked="{Binding Settings.PackRemoveAD, Mode=TwoWay}"
-                                    IsEnabled="False" />
+                                <CheckBox Content="移除广告页" IsChecked="{Binding Settings.PackRemoveAD, Mode=TwoWay}" />
                                 <Border
                                     Grid.Column="1"
                                     Margin="10,0,0,0"
@@ -424,6 +434,24 @@
                                     VerticalAlignment="Center"
                                     Background="Transparent"
                                     ToolTip="在打包文件中添加一层嵌套的和文件名同名的文件夹">
+                                    <Path
+                                        Data="{StaticResource QuestionGeometry}"
+                                        Fill="{DynamicResource AccentBrush}"
+                                        Style="{StaticResource PathIcon14Style}" />
+                                </Border>
+                            </Grid>
+                            <Grid Margin="0,10,0,0" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Content="常见图片类型转换为 WebP 格式" IsChecked="{Binding Settings.PackConvertToWebP, Mode=TwoWay}" />
+                                <Border
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    ToolTip="采用最高质量有损压缩模式，此选项会影响打包速度">
                                     <Path
                                         Data="{StaticResource QuestionGeometry}"
                                         Fill="{DynamicResource AccentBrush}"

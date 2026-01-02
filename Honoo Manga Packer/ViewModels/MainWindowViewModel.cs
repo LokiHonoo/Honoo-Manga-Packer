@@ -5,7 +5,7 @@ using Honoo.MangaPacker.Views;
 using HonooUI.WPF;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -19,20 +19,21 @@ namespace Honoo.MangaPacker.ViewModels
     {
         #region Members
 
-        public ICommand BrowserWorkDirectlyCommand { get;  }
-        public ICommand EditPasswordsCommand { get;  }
-        public ICommand PackClearCommand { get;  }
-        public ICommand PackCommand { get;  }
-        public ICommand PackDropCommand { get;  }
+        public ICommand BrowserWorkDirectlyCommand { get; }
+        public ICommand EditPasswordsCommand { get; }
+        public ICommand OpenWorkDirectlyCommand { get; }
+        public ICommand PackClearCommand { get; }
+        public ICommand PackCommand { get; }
+        public ICommand PackDropCommand { get; }
         public PackWorkbench PackWorkbench { get; } = PackWorkbench.Instance;
         public Settings Settings { get; } = Settings.Instance;
-        public ICommand UnpackClearCommand { get;  }
-        public ICommand UnpackCommand { get;  }
-        public ICommand UnpackDropCommand { get;  }
+        public ICommand UnpackClearCommand { get; }
+        public ICommand UnpackCommand { get; }
+        public ICommand UnpackDropCommand { get; }
         public UnpackWorkbench UnpackWorkbench { get; } = UnpackWorkbench.Instance;
         public string? Version { get; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
-        public ICommand ViewPackLogCommand { get;  }
-        public ICommand ViewUnpackLogCommand { get;  }
+        public ICommand ViewPackLogCommand { get; }
+        public ICommand ViewUnpackLogCommand { get; }
 
         #endregion Members
 
@@ -48,16 +49,7 @@ namespace Honoo.MangaPacker.ViewModels
             this.PackCommand = new RelayCommand(PackCommandExecute);
             this.ViewPackLogCommand = new RelayCommand(ViewPackLogCommandExecute);
             this.BrowserWorkDirectlyCommand = new RelayCommand(BrowserWorkDirectlyCommandExecute);
-        }
-
-        private void ViewPackLogCommandExecute()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ViewUnpackLogCommandExecute()
-        {
-            UnpackLogWindow.Instance.Show();
+            this.OpenWorkDirectlyCommand = new RelayCommand(OpenWorkDirectlyCommandExecute);
         }
 
         private void BrowserWorkDirectlyCommandExecute()
@@ -106,6 +98,22 @@ namespace Honoo.MangaPacker.ViewModels
                            null);
         }
 
+        private void OpenWorkDirectlyCommandExecute()
+        {
+            if (!Directory.Exists(this.Settings.WorkDirectly))
+            {
+                try
+                {
+                    Directory.CreateDirectory(this.Settings.WorkDirectly);
+                }
+                catch { }
+            }
+            if (Directory.Exists(this.Settings.WorkDirectly))
+            {
+                Process.Start(new ProcessStartInfo(this.Settings.WorkDirectly) { UseShellExecute = true });
+            }
+        }
+
         private void PackClearCommandExecute()
         {
             this.PackWorkbench.Projects.Clear();
@@ -129,6 +137,7 @@ namespace Honoo.MangaPacker.ViewModels
                                                     this.Settings.PackRemoveAD,
                                                     this.Settings.PackRemoveNest,
                                                     this.Settings.PackAddNest,
+                                                    this.Settings.PackConvertToWebP,
                                                     this.Settings.UnpackDelSource);
                     if (settings.PackClearTarget && Directory.Exists(settings.PackDir))
                     {
@@ -168,19 +177,20 @@ namespace Honoo.MangaPacker.ViewModels
                         {
                             for (int i = this.PackWorkbench.Projects.Count - 1; i >= 0; i--)
                             {
-                                if (!this.PackWorkbench.Abort)
+                                if (this.PackWorkbench.Abort)
                                 {
-                                    PackResult result = Pack.Do(this.PackWorkbench.Projects[i], settings);
-                                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                                    {
-                                        this.PackWorkbench.Logs.Add(result.Info);
-                                    }));
-                                    if (!result.Success)
-                                    {
-                                        this.PackWorkbench.HasError = true;
-                                    }
-                                    this.PackWorkbench.Projects.RemoveAt(i);
+                                    break;
                                 }
+                                PackResult result = Pack.Do(this.PackWorkbench.Projects[i], settings);
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    this.PackWorkbench.Logs.Add(result.Info);
+                                }));
+                                if (!result.Success)
+                                {
+                                    this.PackWorkbench.HasError = true;
+                                }
+                                this.PackWorkbench.Projects.RemoveAt(i);
                             }
                             this.PackWorkbench.IsRunning = false;
                         });
@@ -282,31 +292,33 @@ namespace Honoo.MangaPacker.ViewModels
                         {
                             for (int i = this.UnpackWorkbench.Projects.Count - 1; i >= 0; i--)
                             {
-                                if (!this.UnpackWorkbench.Abort)
+                                if (this.UnpackWorkbench.Abort)
                                 {
-                                    UnpackResult result = Unpack.Do(this.UnpackWorkbench.Projects[i], settings);
-                                    if (result.Success)
-                                    {
-                                        Application.Current.Dispatcher.Invoke(new Action(() =>
-                                        {
-                                            this.UnpackWorkbench.Logs.Add(result.Info);
-                                            if (settings.UnpackSendToPack && !this.PackWorkbench.IsRunning)
-                                            {
-                                                this.PackWorkbench.Projects.Add(result.Output);
-                                            }
-                                        }));
-                                    }
-                                    else
-                                    {
-                                        Application.Current.Dispatcher.Invoke(new Action(() =>
-                                        {
-                                            this.UnpackWorkbench.Logs.Add(result.Info);
-                                        }));
-                                        this.UnpackWorkbench.HasError = true;
-                                    }
-                                    this.UnpackWorkbench.Projects.RemoveAt(i);
+                                    break;
                                 }
+                                UnpackResult result = Unpack.Do(this.UnpackWorkbench.Projects[i], settings);
+                                if (result.Success)
+                                {
+                                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        this.UnpackWorkbench.Logs.Add(result.Info);
+                                        if (settings.UnpackSendToPack && !this.PackWorkbench.IsRunning)
+                                        {
+                                            this.PackWorkbench.Projects.Add(result.Output);
+                                        }
+                                    }));
+                                }
+                                else
+                                {
+                                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        this.UnpackWorkbench.Logs.Add(result.Info);
+                                    }));
+                                    this.UnpackWorkbench.HasError = true;
+                                }
+                                this.UnpackWorkbench.Projects.RemoveAt(i);
                             }
+
                             this.UnpackWorkbench.IsRunning = false;
                         });
                     }
@@ -342,6 +354,16 @@ namespace Honoo.MangaPacker.ViewModels
                     }
                 }
             }
+        }
+
+        private void ViewPackLogCommandExecute()
+        {
+            new PackLogWindow().Show();
+        }
+
+        private void ViewUnpackLogCommandExecute()
+        {
+            new UnpackLogWindow().Show();
         }
     }
 }

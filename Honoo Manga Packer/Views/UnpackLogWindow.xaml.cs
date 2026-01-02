@@ -7,12 +7,6 @@ namespace Honoo.MangaPacker.Views
     /// </summary>
     public partial class UnpackLogWindow : Window
     {
-        #region Instance
-
-        public static UnpackLogWindow Instance { get; } = new UnpackLogWindow();
-
-        #endregion Instance
-
         public UnpackLogWindow()
         {
             InitializeComponent();

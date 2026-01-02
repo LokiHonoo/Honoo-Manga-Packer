@@ -22,6 +22,7 @@ namespace Honoo.MangaPacker.ViewModels
         [ObservableProperty] private long[] _ads = [];
         [ObservableProperty] private bool _packAddNest;
         [ObservableProperty] private bool _packClearTarget;
+        [ObservableProperty] private bool _packConvertToWebP;
         [ObservableProperty] private bool _packDelSource;
         [ObservableProperty] private bool _packRemoveAD;
         [ObservableProperty] private bool _packRemoveNest;
@@ -34,7 +35,7 @@ namespace Honoo.MangaPacker.ViewModels
         [ObservableProperty] private bool _unpackTryPassword;
         [ObservableProperty] private int _windowLeft = 300;
         [ObservableProperty] private int _windowTop = 300;
-        [ObservableProperty] private string _workDirectly = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "HmpWorking");
+        [ObservableProperty] private string _workDirectly = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "HMP-Work");
         public string[] UnpackEncodings { get; } = ["UTF-8", "Unicode", "GBK", "Big5", "Shift-JIS"];
         public HashSet<string> UnpackPasswords { get; set; } = [];
 
@@ -58,6 +59,7 @@ namespace Honoo.MangaPacker.ViewModels
             this.PackRemoveAD = manager.Default.Properties.GetValue("PackRemoveAD", new XString(this.PackRemoveAD.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
             this.PackRemoveNest = manager.Default.Properties.GetValue("PackRemoveNest", new XString(this.PackRemoveNest.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
             this.PackAddNest = manager.Default.Properties.GetValue("PackAddNest", new XString(this.PackAddNest.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
+            this.PackConvertToWebP = manager.Default.Properties.GetValue("PackConvertToWebP", new XString(this.PackConvertToWebP.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
             this.PackDelSource = manager.Default.Properties.GetValue("PackDelSource", new XString(this.PackDelSource.ToString(CultureInfo.InvariantCulture))).GetBooleanValue();
         }
 
@@ -93,6 +95,7 @@ namespace Honoo.MangaPacker.ViewModels
             manager.Default.Properties.AddOrUpdate("PackRemoveAD", new XString(this.PackRemoveAD.ToString(CultureInfo.InvariantCulture)));
             manager.Default.Properties.AddOrUpdate("PackRemoveNest", new XString(this.PackRemoveNest.ToString(CultureInfo.InvariantCulture)));
             manager.Default.Properties.AddOrUpdate("PackAddNest", new XString(this.PackAddNest.ToString(CultureInfo.InvariantCulture)));
+            manager.Default.Properties.AddOrUpdate("PackConvertToWebP", new XString(this.PackConvertToWebP.ToString(CultureInfo.InvariantCulture)));
             manager.Default.Properties.AddOrUpdate("PackDelSource", new XString(this.PackDelSource.ToString(CultureInfo.InvariantCulture)));
 
             manager.Save(_configFlie);
